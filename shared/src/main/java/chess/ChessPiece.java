@@ -64,6 +64,22 @@ public class ChessPiece {
             case KING -> kingMoves();
         };
     }
+    // check if it is a valid move
+    private boolean validMove(ChessBoard board, ChessPosition start, ChessPosition end){
+        //check if it is out of bounds
+        if (!validPosition(end)){
+            return false;
+        }
+        else{
+            return board.getPiece(end) == null || board.getPiece(end).getTeamColor() != board.getPiece(start).getTeamColor();
+        }
+
+    }
+    //check if position is on the chess board
+    private boolean validPosition(ChessPosition myPosition){
+        return myPosition.getRow() >=1 && myPosition.getRow() <= 8 && myPosition.getColumn() >=1 && myPosition.getColumn() <=8;
+    }
+
 
     private Collection<ChessMove> kingMoves() {
         return Collections.emptyList();
