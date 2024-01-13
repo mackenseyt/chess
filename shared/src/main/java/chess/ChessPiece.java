@@ -2,6 +2,9 @@ package chess;
 
 import java.util.Collection;
 
+import java.util.Collections;
+
+
 /**
  * Represents a single chess piece
  * <p>
@@ -9,8 +12,13 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
+    private final ChessGame.TeamColor pieceColor;
+    private final PieceType type;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+        this.pieceColor = pieceColor;
+        this.type = type;
+
     }
 
     /**
@@ -29,14 +37,14 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return pieceColor;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return type;
     }
 
     /**
@@ -47,6 +55,37 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        return switch(type) {
+            case PAWN -> pawnMoves();
+            case ROOK -> rookMoves();
+            case KNIGHT -> knightMoves();
+            case BISHOP -> bishopMoves(board, myPosition);
+            case QUEEN -> queenMoves();
+            case KING -> kingMoves();
+        };
+    }
+
+    private Collection<ChessMove> kingMoves() {
+        return Collections.emptyList();
+    }
+
+    private Collection<ChessMove> queenMoves() {
+        return Collections.emptyList();
+    }
+
+    private Collection<ChessMove> knightMoves() {
+        return Collections.emptyList();
+    }
+
+    private Collection<ChessMove> rookMoves() {
+        return Collections.emptyList();
+    }
+
+    private Collection<ChessMove> pawnMoves() {
+        return Collections.emptyList();
+    }
+
+    private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition){
+        return Collections.emptyList();
     }
 }
