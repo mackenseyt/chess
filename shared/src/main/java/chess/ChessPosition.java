@@ -32,4 +32,7 @@ public class ChessPosition {
 //        throw new RuntimeException("Not implemented");
         return col;
     }
+    public String toString() {
+        return "(" + row + ","+ col + ")";
+    }
 }

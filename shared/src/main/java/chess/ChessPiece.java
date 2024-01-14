@@ -1,8 +1,6 @@
 package chess;
 
-import java.util.Collection;
-
-import java.util.Collections;
+import java.util.*;
 
 
 /**
@@ -55,6 +53,9 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+//        if (board.getPiece(myPosition) == null){
+//            return new HashSet<>();
+//        }
         return switch(type) {
             case PAWN -> pawnMoves();
             case ROOK -> rookMoves();
@@ -65,9 +66,9 @@ public class ChessPiece {
         };
     }
     // check if it is a valid move
-    private boolean validMove(ChessBoard board, ChessPosition start, ChessPosition end){
+    private boolean isValidMove(ChessBoard board, ChessPosition start, ChessPosition end){
         //check if it is out of bounds
-        if (!validPosition(end)){
+        if (!isValidPosition(end)){
             return false;
         }
         else{
@@ -76,7 +77,7 @@ public class ChessPiece {
 
     }
     //check if position is on the chess board
-    private boolean validPosition(ChessPosition myPosition){
+    private boolean isValidPosition(ChessPosition myPosition){
         return myPosition.getRow() >=1 && myPosition.getRow() <= 8 && myPosition.getColumn() >=1 && myPosition.getColumn() <=8;
     }
 
@@ -102,6 +103,58 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition){
-        return Collections.emptyList();
+        Set<ChessMove> validMoves = new HashSet<>();
+        int currentRow = myPosition.getRow();
+        int currentCol = myPosition.getColumn();
+        int[][] directions = {{-1,-1}, {-1,1}, {1,-1}, {1,1}};
+        for (int[] direction: directions){
+            untilBlocked(board, myPosition, currentRow, currentCol, direction[0], direction[1], validMoves);
+        }
+
+        return validMoves;
+    }
+    private void untilBlocked(ChessBoard board, ChessPosition myPosition,int currentRow, int currentCol, int rowIncrement, int colIncrement, Set<ChessMove> validMoves){
+//        int currentRow = myPosition.getRow();
+//        int currentCol = myPosition.getColumn();
+
+        int targetRow = currentRow + rowIncrement;
+        int targetCol = currentCol + colIncrement;
+
+        while (isValidMove(board, myPosition, new ChessPosition(targetRow, targetCol))){
+            ChessPiece targetPiece = board.getPiece(new ChessPosition(targetRow, targetCol));
+            if(targetPiece == null){
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(targetRow, targetCol),null));
+            }
+            else{
+                if (targetPiece.getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(targetRow, targetCol),targetPiece.getPieceType()));
+                }
+                break;
+            }
+            targetRow += rowIncrement;
+            targetCol += colIncrement;
+
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece piece = (ChessPiece) o;
+        return pieceColor == piece.pieceColor && type == piece.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "pieceColor=" + pieceColor +
+                ", type=" + type +
+                '}';
     }
 }
