@@ -58,7 +58,7 @@ public class ChessPiece {
 //        }
         return switch(type) {
             case PAWN -> pawnMoves();
-            case ROOK -> rookMoves();
+            case ROOK -> rookMoves(board, myPosition);
             case KNIGHT -> knightMoves();
             case BISHOP -> bishopMoves(board, myPosition);
             case QUEEN -> queenMoves();
@@ -81,7 +81,9 @@ public class ChessPiece {
         return myPosition.getRow() >=1 && myPosition.getRow() <= 8 && myPosition.getColumn() >=1 && myPosition.getColumn() <=8;
     }
 
-
+    private Collection<ChessMove> pawnMoves() {
+        return Collections.emptyList();
+    }
     private Collection<ChessMove> kingMoves() {
         return Collections.emptyList();
     }
@@ -94,13 +96,19 @@ public class ChessPiece {
         return Collections.emptyList();
     }
 
-    private Collection<ChessMove> rookMoves() {
-        return Collections.emptyList();
+    private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
+        Set<ChessMove> validMoves = new HashSet<>();
+        int currentRow = myPosition.getRow();
+        int currentCol = myPosition.getColumn();
+        int[][] directions = {{1,0}, {-1,0}, {0, 1}, {0,-1}};
+        for (int[] direction: directions){
+            untilBlocked(board, myPosition, currentRow, currentCol, direction[0], direction[1], validMoves);
+
+        }
+        System.out.println("Valid Moves: " + validMoves);
+        return validMoves;
     }
 
-    private Collection<ChessMove> pawnMoves() {
-        return Collections.emptyList();
-    }
 
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition){
         Set<ChessMove> validMoves = new HashSet<>();
@@ -109,13 +117,16 @@ public class ChessPiece {
         int[][] directions = {{-1,-1}, {-1,1}, {1,-1}, {1,1}};
         for (int[] direction: directions){
             untilBlocked(board, myPosition, currentRow, currentCol, direction[0], direction[1], validMoves);
-        }
 
+        }
+        System.out.println("Valid Moves: " + validMoves);
         return validMoves;
+//        List<ChessMove> sortedMoves = new ArrayList<>(validMoves);
+//        Collections.sort(sortedMoves);
+//
+//        return sortedMoves;
     }
     private void untilBlocked(ChessBoard board, ChessPosition myPosition,int currentRow, int currentCol, int rowIncrement, int colIncrement, Set<ChessMove> validMoves){
-//        int currentRow = myPosition.getRow();
-//        int currentCol = myPosition.getColumn();
 
         int targetRow = currentRow + rowIncrement;
         int targetCol = currentCol + colIncrement;
