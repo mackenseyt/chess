@@ -59,7 +59,7 @@ public class ChessPiece {
         return switch(type) {
             case PAWN -> pawnMoves();
             case ROOK -> rookMoves(board, myPosition);
-            case KNIGHT -> knightMoves();
+            case KNIGHT -> knightMoves(board, myPosition);
             case BISHOP -> bishopMoves(board, myPosition);
             case QUEEN -> queenMoves();
             case KING -> kingMoves();
@@ -92,8 +92,24 @@ public class ChessPiece {
         return Collections.emptyList();
     }
 
-    private Collection<ChessMove> knightMoves() {
-        return Collections.emptyList();
+    private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
+        Set<ChessMove> validMoves = new HashSet<>();
+        int currentRow = myPosition.getRow();
+        int currentCol = myPosition.getColumn();
+        int[][] directions = {{2,1}, {2,-1}, {1, 2}, {1,-2}};
+        for (int[] direction: directions){
+            int targetRow = currentRow + direction[0];
+            int targetCol = currentCol + direction[1];
+            ChessPosition finPosition = new ChessPosition(targetRow, targetCol);
+
+            if (isValidPosition(finPosition)) {
+                validMoves.add(new ChessMove(myPosition, finPosition, null));
+            }
+//            untilBlocked(board, myPosition, currentRow, currentCol, direction[0], direction[1], validMoves);
+
+        }
+        System.out.println("Valid Moves: " + validMoves);
+        return validMoves;
     }
 
     private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {

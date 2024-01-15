@@ -12,7 +12,7 @@ public class ChessBoard {
     private final ChessPiece[][] board = new ChessPiece[8][8];
 
     public ChessBoard() {
-//        this.board = new ChessPiece[8][8];
+//\        this.board = new ChessPiece[8][8];
     }
 
     /**
@@ -45,10 +45,34 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                board[i][j] = null;
+            }
+        }
+        initializeRow(0, ChessGame.TeamColor.WHITE, false);
+        initializeRow(1, ChessGame.TeamColor.WHITE, true);
+        initializeRow(6, ChessGame.TeamColor.BLACK, true);
+        initializeRow(7, ChessGame.TeamColor.BLACK, false);
+    }
 
-        // row zero and row one need to have one team
-        // row 6 and row 7 have to have another team
-        // I still need to figure out how to impliment this sh**
-        // i think i need to make a class that sets a row and says what goes in it?
+    private void initializeRow(int row, ChessGame.TeamColor teamColor, boolean pawn) {
+        if (pawn){
+            for (int col = 0; col < 8; col++) {
+                board[row][col] = new ChessPiece(teamColor, ChessPiece.PieceType.PAWN);
+            }
+        }
+        else{
+            board[row][0] = new ChessPiece(teamColor, ChessPiece.PieceType.ROOK);
+            board[row][1] = new ChessPiece(teamColor, ChessPiece.PieceType.KNIGHT);
+            board[row][2] = new ChessPiece(teamColor, ChessPiece.PieceType.BISHOP);
+            board[row][3] = new ChessPiece(teamColor, ChessPiece.PieceType.QUEEN);
+            board[row][4] = new ChessPiece(teamColor, ChessPiece.PieceType.KING);
+            board[row][5] = new ChessPiece(teamColor, ChessPiece.PieceType.BISHOP);
+            board[row][6] = new ChessPiece(teamColor, ChessPiece.PieceType.KNIGHT);
+            board[row][7] = new ChessPiece(teamColor, ChessPiece.PieceType.ROOK);
+        }
+
+
     }
 }
