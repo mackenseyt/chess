@@ -85,6 +85,8 @@ public class ChessPiece {
         Set<ChessMove> validMoves = new HashSet<>();
         int currentRow = myPosition.getRow();
         int currentCol = myPosition.getColumn();
+        int[][] firstDirections = {{2,0}};
+        int[][] secondfDirections = {{1,0}};
         return Collections.emptyList();
     }
     private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
