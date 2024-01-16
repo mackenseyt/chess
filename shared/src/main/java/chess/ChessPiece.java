@@ -96,13 +96,14 @@ public class ChessPiece {
         Set<ChessMove> validMoves = new HashSet<>();
         int currentRow = myPosition.getRow();
         int currentCol = myPosition.getColumn();
-        int[][] directions = {{2,1}, {2,-1}, {1, 2}, {1,-2}};
+        int[][] directions = {{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}};
         for (int[] direction: directions){
             int targetRow = currentRow + direction[0];
             int targetCol = currentCol + direction[1];
             ChessPosition finPosition = new ChessPosition(targetRow, targetCol);
 
-            if (isValidPosition(finPosition)) {
+            System.out.println("Checking position: " + finPosition);
+            if (isValidPosition(finPosition) && (board.getPiece(finPosition)==null) || isValidPosition(finPosition) && (board.getPiece(finPosition).getTeamColor()!= board.getPiece(myPosition).getTeamColor())) {
                 validMoves.add(new ChessMove(myPosition, finPosition, null));
             }
 //            untilBlocked(board, myPosition, currentRow, currentCol, direction[0], direction[1], validMoves);
@@ -135,12 +136,9 @@ public class ChessPiece {
             untilBlocked(board, myPosition, currentRow, currentCol, direction[0], direction[1], validMoves);
 
         }
-        System.out.println("Valid Moves: " + validMoves);
+//        System.out.println("Valid Moves: " + validMoves);
         return validMoves;
-//        List<ChessMove> sortedMoves = new ArrayList<>(validMoves);
-//        Collections.sort(sortedMoves);
-//
-//        return sortedMoves;
+
     }
     private void untilBlocked(ChessBoard board, ChessPosition myPosition,int currentRow, int currentCol, int rowIncrement, int colIncrement, Set<ChessMove> validMoves){
 
@@ -160,7 +158,6 @@ public class ChessPiece {
             }
             targetRow += rowIncrement;
             targetCol += colIncrement;
-
         }
     }
 
