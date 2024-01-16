@@ -57,12 +57,12 @@ public class ChessPiece {
 //            return new HashSet<>();
 //        }
         return switch(type) {
-            case PAWN -> pawnMoves();
+            case PAWN -> pawnMoves(board, myPosition);
             case ROOK -> rookMoves(board, myPosition);
             case KNIGHT -> knightMoves(board, myPosition);
             case BISHOP -> bishopMoves(board, myPosition);
-            case QUEEN -> queenMoves();
-            case KING -> kingMoves();
+            case QUEEN -> queenMoves(board, myPosition);
+            case KING -> kingMoves(board, myPosition);
         };
     }
     // check if it is a valid move
@@ -81,15 +81,42 @@ public class ChessPiece {
         return myPosition.getRow() >=1 && myPosition.getRow() <= 8 && myPosition.getColumn() >=1 && myPosition.getColumn() <=8;
     }
 
-    private Collection<ChessMove> pawnMoves() {
+    private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
+        Set<ChessMove> validMoves = new HashSet<>();
+        int currentRow = myPosition.getRow();
+        int currentCol = myPosition.getColumn();
         return Collections.emptyList();
     }
-    private Collection<ChessMove> kingMoves() {
-        return Collections.emptyList();
+    private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
+        Set<ChessMove> validMoves = new HashSet<>();
+        int currentRow = myPosition.getRow();
+        int currentCol = myPosition.getColumn();
+        int[][] directions = {{1,0}, {-1,0}, {0, 1}, {0,-1},{-1,-1}, {-1,1}, {1,-1}, {1,1}};
+        for (int[] direction: directions){
+            int targetRow = currentRow + direction[0];
+            int targetCol = currentCol + direction[1];
+            ChessPosition finPosition = new ChessPosition(targetRow, targetCol);
+
+            if (isValidPosition(finPosition) && (board.getPiece(finPosition)==null) || isValidPosition(finPosition) && (board.getPiece(finPosition).getTeamColor()!= board.getPiece(myPosition).getTeamColor())) {
+                validMoves.add(new ChessMove(myPosition, finPosition, null));
+            }
+
+        }
+        System.out.println("Valid Moves: " + validMoves);
+        return validMoves;
     }
 
-    private Collection<ChessMove> queenMoves() {
-        return Collections.emptyList();
+    private Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
+        Set<ChessMove> validMoves = new HashSet<>();
+        int currentRow = myPosition.getRow();
+        int currentCol = myPosition.getColumn();
+        int[][] directions = {{1,0}, {-1,0}, {0, 1}, {0,-1},{-1,-1}, {-1,1}, {1,-1}, {1,1}};
+        for (int[] direction: directions){
+            untilBlocked(board, myPosition, currentRow, currentCol, direction[0], direction[1], validMoves);
+
+        }
+        System.out.println("Valid Moves: " + validMoves);
+        return validMoves;
     }
 
     private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
@@ -102,11 +129,9 @@ public class ChessPiece {
             int targetCol = currentCol + direction[1];
             ChessPosition finPosition = new ChessPosition(targetRow, targetCol);
 
-            System.out.println("Checking position: " + finPosition);
             if (isValidPosition(finPosition) && (board.getPiece(finPosition)==null) || isValidPosition(finPosition) && (board.getPiece(finPosition).getTeamColor()!= board.getPiece(myPosition).getTeamColor())) {
                 validMoves.add(new ChessMove(myPosition, finPosition, null));
             }
-//            untilBlocked(board, myPosition, currentRow, currentCol, direction[0], direction[1], validMoves);
 
         }
         System.out.println("Valid Moves: " + validMoves);
