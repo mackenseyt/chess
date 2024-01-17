@@ -53,9 +53,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-//        if (board.getPiece(myPosition) == null){
-//            return new HashSet<>();
-//        }
+
         return switch(type) {
             case PAWN -> pawnMoves(board, myPosition);
             case ROOK -> rookMoves(board, myPosition);
@@ -83,11 +81,43 @@ public class ChessPiece {
 
     private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
         Set<ChessMove> validMoves = new HashSet<>();
+        var teamColor = board.getPiece(myPosition).getTeamColor();
+
+        int initialRow = (teamColor == ChessGame.TeamColor.WHITE) ? 2 : 7;
+        int promotionRow = (teamColor == ChessGame.TeamColor.WHITE) ? 8 : 1;
+        int direction = (teamColor == ChessGame.TeamColor.WHITE) ? 1 : -1;
+
         int currentRow = myPosition.getRow();
         int currentCol = myPosition.getColumn();
-        int[][] firstDirections = {{2,0}};
-        int[][] secondfDirections = {{1,0}};
-        return Collections.emptyList();
+
+        ChessPosition firstDirections = new ChessPosition(currentRow + 2 * direction, currentCol);
+        ChessPosition secondDirections = new ChessPosition(currentRow + direction, currentCol);
+        ChessPosition captureRight = new ChessPosition(currentRow + direction, currentCol + 1);
+        ChessPosition captureLeft = new ChessPosition(currentRow + direction, currentCol -1);
+
+        if (isValidMove(board, myPosition, secondDirections) && board.getPiece(secondDirections)==null){
+            validMoves.add(new ChessMove(myPosition, secondDirections, null));
+            if (isValidMove(board, myPosition, firstDirections) && (board.getPiece(firstDirections) == null)&& currentRow == initialRow) {
+                validMoves.add(new ChessMove(myPosition, firstDirections, null));
+            }
+        }
+        for (ChessPosition capture: new ChessPosition[]{captureRight, captureLeft}){
+            if (isValidMove(board, myPosition, capture)){
+                ChessPiece target = board.getPiece(capture);
+                if(target != null && target.getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+                    validMoves.add(new ChessMove(myPosition, capture, null));
+                }
+            }
+            if (myPosition.getRow() == promotionRow) {
+                for (var promotionPiece : new PieceType[]{PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
+                    ChessPosition promotionPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn());
+                    validMoves.add(new ChessMove(myPosition, promotionPosition, promotionPiece));
+                }
+            }
+        }
+
+
+        return validMoves;
     }
     private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
         Set<ChessMove> validMoves = new HashSet<>();
@@ -179,7 +209,7 @@ public class ChessPiece {
             }
             else{
                 if (targetPiece.getTeamColor() != board.getPiece(myPosition).getTeamColor()){
-                    validMoves.add(new ChessMove(myPosition, new ChessPosition(targetRow, targetCol),targetPiece.getPieceType()));
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(targetRow, targetCol)));
                 }
                 break;
             }
