@@ -57,10 +57,25 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
         Set<ChessMove> moves = new HashSet<>(piece.pieceMoves(board, startPosition));
-
+        
         return moves;
     }
-
+    /**
+     * Find the king of the current team
+     *
+     */
+    private ChessPosition kingPosition(ChessBoard board, TeamColor teamTurn){
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j<8; j++){
+                ChessPosition curPosition = new ChessPosition(i,j);
+                if(board.getPiece(curPosition).getTeamColor() == teamTurn &&
+                        board.getPiece(curPosition).getPieceType() == ChessPiece.PieceType.KING){
+                    return curPosition;
+                }
+            }
+        }
+        return null;
+    }
     /**
      * Makes a move in a chess game
      *
