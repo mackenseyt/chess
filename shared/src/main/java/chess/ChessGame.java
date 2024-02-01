@@ -18,7 +18,7 @@ public class ChessGame {
 //    private final Set<ChessMove> moves = new HashSet<>();
 
     public ChessGame() {
-//        this.teamTurn = TeamColor.WHITE;
+        this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
         board.resetBoard();
     }
@@ -113,7 +113,7 @@ public class ChessGame {
                 if(curPiece.getTeamColor() != teamColor){
                     Set<ChessMove> validMoves = new HashSet<>(curPiece.pieceMoves(board, curPosition));
                     for(var move: validMoves){
-                        if (move.getEndPosition() == kingPosition){
+                        if (move.getEndPosition().equals(kingPosition)){
                             return true;
                         }
                     }
@@ -131,7 +131,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if(canMove(teamColor)){
+        if(!canMove(teamColor)){
             return false;
         }
         return isInCheck(teamColor);
@@ -153,6 +153,7 @@ public class ChessGame {
             for(int j = 1; j<= 8; j++){
                 ChessPosition curPosition = new ChessPosition(i,j);
                 ChessPiece curPiece = board.getPiece(curPosition);
+                if(curPiece == null) continue;
                 if(curPiece.getTeamColor() == teamColor){
                     Set<ChessMove> validMoves = new HashSet<>(curPiece.pieceMoves(board, curPosition));
                     if(!validMoves.isEmpty()){
