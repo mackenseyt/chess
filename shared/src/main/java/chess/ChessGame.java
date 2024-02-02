@@ -15,10 +15,11 @@ import java.util.Set;
 public class ChessGame {
     private ChessBoard board;
     private TeamColor teamTurn;
-//    private final Set<ChessMove> moves = new HashSet<>();
+
+//    private final Set<ChessMove> validMoves = new HashSet<>();
 
     public ChessGame() {
-        this.teamTurn = TeamColor.WHITE;
+//        this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
         board.resetBoard();
     }
@@ -56,13 +57,24 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
-        Set<ChessMove> moves = new HashSet<>(piece.pieceMoves(board, startPosition));
-//        removeInvalidMoves(moves);
-        
-        return moves;
+        Set<ChessMove> pieceMoves = new HashSet<>(piece.pieceMoves(board, startPosition));
+        removeInvalidMoves(pieceMoves);
+        return pieceMoves;
     }
+
+//    remove the move if it puts us in check
     private void removeInvalidMoves(Set<ChessMove> validMoves){
-        throw new RuntimeException("Not implemented");
+        validMoves.removeIf(moves -> {
+            ChessPiece startPiece = board.getPiece(moves.getStartPosition());
+            ChessPiece endPiece = board.getPiece(moves.getEndPosition());
+            board.addPiece(moves.getEndPosition(), startPiece);
+            board.addPiece(moves.getStartPosition(), null);
+            boolean inCheck = isInCheck(startPiece.getTeamColor());
+            board.addPiece(moves.getStartPosition(), startPiece);
+            board.addPiece(moves.getEndPosition(), endPiece);
+
+            return inCheck;
+        });
     }
 
     /**
