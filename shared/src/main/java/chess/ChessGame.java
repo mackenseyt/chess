@@ -113,7 +113,13 @@ public class ChessGame {
             if(targetPiece != null && targetPiece.getTeamColor() != curPiece.getTeamColor()){
                 board.addPiece(move.getEndPosition(), null);
             }
-            board.addPiece(move.getEndPosition(), curPiece);
+            ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
+            if (promotionPiece == null){
+                board.addPiece(move.getEndPosition(), curPiece);
+            }else{
+                board.addPiece(move.getEndPosition(), new ChessPiece(teamTurn, promotionPiece));
+            }
+
             board.addPiece(move.getStartPosition(), null);
 
             // switch team turns
