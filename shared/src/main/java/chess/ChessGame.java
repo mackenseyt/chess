@@ -19,7 +19,7 @@ public class ChessGame {
 //    private final Set<ChessMove> validMoves = new HashSet<>();
 
     public ChessGame() {
-//        this.teamTurn = TeamColor.WHITE;
+        this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
         board.resetBoard();
     }
@@ -107,6 +107,21 @@ public class ChessGame {
             throw new InvalidMoveException("Wrong team");
         }
         Set<ChessMove> validMoves = new HashSet<>(validMoves(move.getStartPosition()));
+        if(validMoves.contains(move)){
+            ChessPiece curPiece = board.getPiece(move.getStartPosition());
+            ChessPiece targetPiece = board.getPiece(move.getEndPosition());
+            if(targetPiece != null && targetPiece.getTeamColor() != curPiece.getTeamColor()){
+                board.addPiece(move.getEndPosition(), null);
+            }
+            board.addPiece(move.getEndPosition(), curPiece);
+            board.addPiece(move.getStartPosition(), null);
+
+            // switch team turns
+            teamTurn = teamTurn == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
+
+        }else{
+            throw new InvalidMoveException("Invalid Move");
+        }
     }
 
     /**
@@ -143,7 +158,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if(!canMove(teamColor)){
+        if(canMove(teamColor)){
             return false;
         }
         return isInCheck(teamColor);
@@ -157,7 +172,10 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        return !canMove(teamColor);
+        if(canMove(teamColor)){
+            return false;
+        }
+        return !isInCheck(teamColor);
     }
 
     private boolean canMove(TeamColor teamColor){
@@ -169,13 +187,13 @@ public class ChessGame {
                 if(curPiece.getTeamColor() == teamColor){
                     Set<ChessMove> validMoves = new HashSet<>(curPiece.pieceMoves(board, curPosition));
                     if(!validMoves.isEmpty()){
-                        return true;
+                        return false;
                     }
                 }
 
             }
         }
-        return false;
+        return true;
     }
 
     /**
