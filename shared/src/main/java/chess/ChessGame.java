@@ -178,6 +178,9 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        if(teamTurn != teamColor){
+            return false;
+        }
         if(canMove(teamColor)){
             return false;
         }
