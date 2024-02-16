@@ -8,7 +8,4 @@ public class DataAccessException extends Exception{
         super(message);
     }
 
-//    private class UserDAO(){
-//
-//    }
 }
