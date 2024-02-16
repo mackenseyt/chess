@@ -1,2 +1,4 @@
-package dataAccess;public class AuthDAO {
+package dataAccess;
+
+public class AuthDAO {
 }
