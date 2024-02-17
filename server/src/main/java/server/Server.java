@@ -1,25 +1,13 @@
 package server;
 
+import model.AuthData;
 import spark.*;
+import Service.*;
 import java.nio.file.Paths;
+import com.google.gson.Gson;
 
 public class Server {
-/** code given in project description. Not sure why it's different. Might delete later **/
-//    public int run(int desiredPort) {
-//        Spark.port(desiredPort);
-//
-//        var webDir = Paths.get(Server.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "web");
-//        Spark.externalStaticFileLocation(webDir.toString());
-//
-//        // Register your endpoints and handle exceptions here.
-//
-//        Spark.awaitInitialization();
-//        return Spark.port();
-//    }
-//
-//    public void stop() {
-//        Spark.stop();
-//    }
+
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -27,9 +15,25 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
+        Spark.delete("/db", this::clearDatabase);
+        Spark.post("/user", this::registerUser);
+        Spark.exception(Exception.class, this::exceptionHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
+    }
+
+    private void exceptionHandler(Exception ex, Request request, Response response) {
+        response.status(ex.getStatusCode());
+    }
+
+    private Object registerUser(Request request, Response response) throws Exception {
+        throw new RuntimeException();
+    }
+
+    private Object clearDatabase(Request request, Response response) {
+
+        return "";
     }
 
     public void stop() {
