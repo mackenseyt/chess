@@ -29,6 +29,11 @@ public class UserDAO {
         authTokens.put(username, authToken);
         return authToken;
     }
+
+    public void clear() {
+        userStoarage.clear();
+        authTokens.clear();
+    }
 //
 //    public void deleteUser(String username) throws DataAccessException{
 //        if(!userStoarage.containsKey(username)){
@@ -36,5 +41,6 @@ public class UserDAO {
 //        }
 //        userStoarage.remove(username);
 //    }
+
 
 }

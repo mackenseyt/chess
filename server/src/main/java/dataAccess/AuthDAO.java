@@ -30,4 +30,8 @@ public class AuthDAO {
         }
         storage.remove(token);
     }
+
+    public void clear() {
+        storage.clear();
+    }
 }

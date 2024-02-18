@@ -14,14 +14,16 @@ import java.util.Map;
 
 public class GameDAO{
     private final Map<Integer, GameData> storage = new HashMap<>();
-//    private int nextGameID = 1;
+    private int nextGameID = 1;
 
-    private void createGame(GameData game) throws DataAccessException{
+    private static Integer createGame(GameData game) throws DataAccessException{
+
         if(storage.containsKey(game.getGameID())){
             throw new DataAccessException("Game ID already exists");
         }
-
+        int gameID = nextGameID++;
         storage.put(game.getGameID(), game);
+        return gameID
     }
     private GameData getGame(Integer id)throws DataAccessException{
         GameData game = storage.get(id);
@@ -43,5 +45,9 @@ public class GameDAO{
             throw new DataAccessException("game does not exist");
         }
         storage.put(game.getGameID(), game);
+    }
+
+    public void clear() {
+        storage.clear();
     }
 }
