@@ -1,17 +1,16 @@
 package server;
 
+import Handlers.UserHandler;
 import dataAccess.DataAccessException;
-import model.AuthData;
 import model.UserData;
 import spark.*;
 import Service.*;
-import java.nio.file.Paths;
+
+import java.util.Map;
+
 import com.google.gson.Gson;
 
-import javax.xml.crypto.Data;
-
 public class Server {
-
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -31,22 +30,36 @@ public class Server {
         response.status();
     }
 
-    private Object registerUser(Request request, Response response) throws DataAccessException {
-        String username = request.queryParams("username");
-        String password = request.queryParams("password");
-        String email = request.queryParams("email");
+// registers user given a username, password, and email
+    private Object registerUser(Request request, Response response) throws DataAccessException{
+        try {
+            UserData userData = new Gson().fromJson(request.body(), UserData.class);
+            // Extract username, password, and email from the UserData object
+            String username = userData.getUsername();
+            String password = userData.getPassword();
+            String email = userData.getEmail();
 
-        // Perform user registration
-        String authToken = userService.register(username, password, email);
+            String authToken = UserService.register(username, password, email);
 
-        if (authToken != null) {
-            response.status(200); // OK
-            return authToken;
-        } else {
-            response.status(400); // Bad Request
-            return "Registration failed";
+//            handles if they give you bad data or a username that already exists
+            if(username == null || password == null || email == null){
+                response.status(400);
+                return new Gson().toJson(Map.of("message", "Error: bad request"));
+            }
+            // Perform user registration
+            if(authToken == null){
+                response.status(403);
+                return new Gson().toJson(Map.of("message", "Error: already taken"));
+            }
+            response.status(200);
+            return new Gson().toJson(Map.of("username", username, "authToken", authToken));
+
+        }catch(DataAccessException e){
+            response.status(500);
+            return new Gson().toJson(Map.of("message", "Error: description"));
         }
     }
+
 
     private Object clearDatabase(Request request, Response response) {
 
@@ -57,4 +70,5 @@ public class Server {
         Spark.stop();
         Spark.awaitStop();
     }
+
 }
