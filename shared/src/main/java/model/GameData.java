@@ -12,7 +12,16 @@ public class GameData {
     private final String gameName;
     private final ChessGame game;
 
-    GameData(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game){
+    public GameData(String gameName){
+        this.gameID = 0;
+        this.whiteUsername = null;
+        this.blackUsername = null;
+        this.gameName = gameName;
+        this.game = new ChessGame();
+        
+    }
+
+    public GameData(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game){
         this.gameID = gameID;
         this.blackUsername = blackUsername;
         this.whiteUsername = whiteUsername;

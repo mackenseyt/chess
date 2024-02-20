@@ -2,6 +2,8 @@ package server;
 
 import Handlers.UserHandler;
 import dataAccess.DataAccessException;
+import dataAccess.GameDAO;
+import model.GameData;
 import model.UserData;
 import spark.*;
 import Service.*;
@@ -14,43 +16,51 @@ public class Server {
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
-
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        Spark.delete("/db", this::clearDatabase);
         Spark.post("/user", this::registerUser);
         Spark.post("/game", this::createGame);
+        Spark.get("/game", this::listGames);
+        Spark.put("/game", this::joinGame);
+        Spark.post("/session", this::loginUser);
+        Spark.delete("/session", this::logoutUser);
+        Spark.delete("/db", this::clearDatabase);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
     }
-    private static String getHeader(Request request) {
-        var header = request.headers("authorization");
-        if (header == null) {
-            return null;
-        }
-        return header;
+
+    private Object joinGame(Request request, Response response) {
+        return "";
     }
 
-    private static Map<String, Object> getBody(Request request) {
-        var body = new Gson().fromJson(request.body(), Map.class);
-        if (body == null) {
-            return null;
-        }
-        return body;
+    private Object listGames(Request request, Response response) {
+        return "";
     }
+
+    private Object logoutUser(Request request, Response response) {
+        return "";
+    }
+
+    private Object loginUser(Request request, Response response) {
+
+        return "";
+    }
+
     private Object createGame(Request request, Response response) {
         try {
             var authToken = getHeader(request);
-            var bodyObj = getBody(request);
-            var body = request.body();
+            GameData data = new Gson().fromJson(request.body(), GameData.class);
+            var body = data.getGameName();
+//            var bodyObj = getBody(request);
+//            var body = request.body();
             if(authToken == null || authToken.isEmpty()){
                 response.status(401);
                 return new Gson().toJson(Map.of("message", "Error: unauthorized"));
             }
-            if(bodyObj == null || bodyObj.isEmpty()){
+            if(body == null){
                 response.status(400);
                 return new Gson().toJson(Map.of("message", "Error: bad request"));
             }
@@ -109,6 +119,18 @@ public class Server {
         }
     }
 
+    private static String getHeader(Request request) {
+        var header = request.headers("authorization");
+        if (header == null) {
+            return null;
+        }
+        return header;
+    }
+
+    private static Map<String, Object> getBody(Request request) {
+        var body = new Gson().fromJson(request.body(), Map.class);
+        return body;
+    }
     public void stop() {
         Spark.stop();
         Spark.awaitStop();

@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class AuthDAO {
 
-    private final Map<String, AuthData> storage = new HashMap<>();
+    private static final Map<String, AuthData> storage = new HashMap<>();
 
     private void createAuth(AuthData auth)throws DataAccessException{
         if(storage.containsKey(auth.getAuthToken())){
@@ -16,10 +16,10 @@ public class AuthDAO {
         }
         storage.put(auth.getAuthToken(), auth);
     }
-    private AuthData getAuth(String token) throws DataAccessException{
+    public static AuthData getAuth(String token) throws DataAccessException{
         AuthData auth = storage.get(token);
         if(auth == null){
-            throw new DataAccessException("Authorization does not exist");
+            throw new DataAccessException("Not authorized");
         }
         return auth;
     }

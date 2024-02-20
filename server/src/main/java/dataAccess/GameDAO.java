@@ -13,18 +13,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GameDAO{
-    private final Map<Integer, GameData> storage = new HashMap<>();
-    private int nextGameID = 1;
+    private static final Map<Integer, GameData> storage = new HashMap<>();
+    private static int nextGameID = 1;
 
-    private static Integer createGame(GameData game) throws DataAccessException{
+    public static Integer createGame(String gameName) throws DataAccessException{
 
-        if(storage.containsKey(game.getGameID())){
-            throw new DataAccessException("Game ID already exists");
+        for (GameData gameData : storage.values()) {
+            if (gameData.getGameName().equals(gameName)) {
+                throw new DataAccessException("Game with name " + gameName + " already exists");
+            }
         }
+
         int gameID = nextGameID++;
-        storage.put(game.getGameID(), game);
-        return gameID
+        GameData newGame = new GameData(gameID, null, null, gameName, null);
+        storage.put(gameID, newGame);
+        return gameID;
     }
+
     private GameData getGame(Integer id)throws DataAccessException{
         GameData game = storage.get(id);
         if(game == null){

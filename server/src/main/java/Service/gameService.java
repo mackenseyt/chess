@@ -1,20 +1,23 @@
 package Service;
+import dataAccess.AuthDAO;
+import dataAccess.DataAccessException;
 import dataAccess.GameDAO;
 import model.AuthData;
 import model.GameData;
 
 import java.util.Collection;
 
+import dataAccess.AuthDAO;
+
 public class gameService {
 
 
-    public static int createGame(String authToken, String gameName) {
+    public static int createGame(String authToken, String gameName) throws DataAccessException {
         // Logic to create a new game
-
 //        check auth token
-
+        AuthDAO.getAuth(authToken);
 //        initialize game
-        int gameID = GameDAO.createGame();
+        int gameID = GameDAO.createGame(gameName);
         // Return the gameID of the newly created game
         return gameID;
     }
