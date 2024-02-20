@@ -5,29 +5,27 @@ import model.UserData;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class AuthDAO {
 
-    private static final Map<String, AuthData> storage = new HashMap<>();
+    private static final Map<String, String> storage = new HashMap<>();
 
-    private void createAuth(AuthData auth)throws DataAccessException{
-        if(storage.containsKey(auth.getAuthToken())){
-            throw new DataAccessException("Authorization already exists");
-        }
-        storage.put(auth.getAuthToken(), auth);
+    public static String createAuth(String username){
+        String authToken = UUID.randomUUID().toString();
+        storage.put(username, authToken);
+        return authToken;
     }
-    public static AuthData getAuth(String token) throws DataAccessException{
-        AuthData auth = storage.get(token);
-        if(auth == null){
-            throw new DataAccessException("Not authorized");
-        }
+    public static String getAuth(String token) throws DataAccessException{
+        String auth = storage.get(token);
+//            throw new DataAccessException("Not authorized");
         return auth;
     }
 
-    private void deleteAuth(String token) throws DataAccessException{
-        if(!storage.containsKey(token)){
-            throw new DataAccessException("Token does not exist");
-        }
+    public static void deleteAuth(String token) throws DataAccessException{
+//        if(!storage.containsKey(token)){
+//            throw new DataAccessException("Token does not exist");
+//        }
         storage.remove(token);
     }
 

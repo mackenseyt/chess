@@ -1,13 +1,14 @@
 package server;
 
-import Handlers.UserHandler;
 import dataAccess.DataAccessException;
-import dataAccess.GameDAO;
 import model.GameData;
 import model.UserData;
+import Handlers.GameHandler;
+import Handlers.SessionHandler;
 import spark.*;
 import Service.*;
 
+import java.util.Collection;
 import java.util.Map;
 
 import com.google.gson.Gson;
@@ -32,20 +33,59 @@ public class Server {
         return Spark.port();
     }
 
-    private Object joinGame(Request request, Response response) {
-        return "";
+    private Object joinGame(Request request, Response response) throws DataAccessException{
+        var authToken = getHeader(request);
+        var body = getBody(request);
+        response.type("application/java");
+//        authorize user (I need to create this)!!!!!!!!!!!!!
+        SessionHandler.authoriseUser(authToken, response);
+        GameHandler.joinGame(body, authToken, response);
+        return response.body();
     }
 
     private Object listGames(Request request, Response response) {
-        return "";
+       try{
+           String authToken = getHeader(request);
+            Collection<GameData> list = GameService.listGames(authToken);
+           if (list.isEmpty()) {
+               return ""; // Return empty string if the list is empty
+           }
+
+           return new Gson().toJson(list);
+       }catch(Exception e){
+           response.status(500);
+       }
+       return "";
     }
 
-    private Object logoutUser(Request request, Response response) {
-        return "";
+    private Object logoutUser(Request request, Response response) throws DataAccessException {
+        try{
+            String authToken = getHeader(request);
+            SessionHandler.authoriseUser(authToken, response);
+            UserService.logout(authToken);
+            return "";
+        }
+        catch(Exception e){
+            response.status(500);
+            return "{ \"message\": \"Error: Invalid login\" }";
+        }
     }
 
     private Object loginUser(Request request, Response response) {
-
+        try{
+            UserData userData = new Gson().fromJson(request.body(), UserData.class);
+            String username = userData.getUsername();
+            String password = userData.getPassword();
+            String authToken = UserService.login(username, password);
+            if(authToken == null){
+                response.status(401);
+                return "{ \"message\": \"Error: unauthorized\" }";
+            }
+            response.status(200);
+            return "{ \"username\":\"" + username+ "\", \"authToken\":\"" + authToken+ "\" }";
+        }catch(Exception e){
+            response.status(500);
+        }
         return "";
     }
 
@@ -56,26 +96,29 @@ public class Server {
             var body = data.getGameName();
 //            var bodyObj = getBody(request);
 //            var body = request.body();
-            if(authToken == null || authToken.isEmpty()){
-                response.status(401);
-                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
-            }
+//            if(authToken == null || authToken.isEmpty()){
+//                response.status(401);
+//                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
+//            }
             if(body == null){
                 response.status(400);
-                return new Gson().toJson(Map.of("message", "Error: bad request"));
+//                return new Gson().toJson(Map.of("message", "Error: bad request"));
             }
 
-            int gameID = gameService.createGame(authToken, body);
+            int gameID = GameService.createGame(authToken, body);
+//            if(gameID == 0){
+//                response.status(401);
+//                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
+//            }
             response.status(200);
             return "{ \"gameID\": "+ gameID+"}";
+//            return new Gson().toJson(gameID);
         }catch(Exception e){
             response.status(500);
-            return new Gson().toJson(Map.of("message", "Error: game not created"));
         }
+        return "";
     }
-    private void exceptionHandler(Exception ex, Request request, Response response) {
-        response.status();
-    }
+
 
 // registers user given a username, password, and email
     private Object registerUser(Request request, Response response){
@@ -130,6 +173,9 @@ public class Server {
     private static Map<String, Object> getBody(Request request) {
         var body = new Gson().fromJson(request.body(), Map.class);
         return body;
+    }
+    private void exceptionHandler(Exception ex, Request request, Response response) {
+        response.status();
     }
     public void stop() {
         Spark.stop();

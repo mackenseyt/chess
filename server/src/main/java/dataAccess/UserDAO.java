@@ -21,14 +21,15 @@ public class UserDAO {
         userStoarage.put(username, user);
     }
 //    get user by username
-    public UserData getUser(String username) throws DataAccessException{
+    public static UserData getUser(String username) throws DataAccessException{
         return userStoarage.get(username);
     }
-    public String createAuthToken(String username) {
-        String authToken = UUID.randomUUID().toString();
-        authTokens.put(username, authToken);
-        return authToken;
-    }
+
+//    public String createAuthToken(String username) {
+//        String authToken = UUID.randomUUID().toString();
+//        authTokens.put(username, authToken);
+//        return authToken;
+//    }
 
     public void clear() {
         userStoarage.clear();

@@ -8,6 +8,7 @@ package dataAccess;
 
 import model.GameData;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,11 +39,10 @@ public class GameDAO{
         return game;
     }
 
-    private Collection<GameData> listGames() throws DataAccessException{
-        if(storage.values().isEmpty()){
-            throw new DataAccessException("There are no games");
-        }
-        return storage.values();
+    public static ArrayList<GameData> listGames() throws DataAccessException{
+//        check auth tokens
+
+        return new ArrayList<>(storage.values());
     }
 
     private void updateGame(GameData game) throws DataAccessException{
