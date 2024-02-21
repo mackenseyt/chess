@@ -1,11 +1,11 @@
-package Service;
+package service;
 import dataAccess.AuthDAO;
 import dataAccess.DataAccessException;
 import dataAccess.GameDAO;
 import dataAccess.UserDAO;
 
 
-public class applicationService {
+public class ApplicationService {
 
     private static final AuthDAO authDAO;
     private static final UserDAO userDAO;
@@ -22,7 +22,7 @@ public class applicationService {
     }
 
 
-    public static void clearAllData() throws DataAccessException{
+    public void clearAllData() throws DataAccessException{
         authDAO.clear();
         userDAO.clear();
         gameDAO.clear();

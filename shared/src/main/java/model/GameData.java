@@ -11,9 +11,10 @@ public class GameData {
     private final String blackUsername;
     private final String gameName;
     private final ChessGame game;
+    private static int nextGameID = 0;
 
     public GameData(String gameName){
-        this.gameID = 0;
+        this.gameID = nextGameID++;
         this.whiteUsername = null;
         this.blackUsername = null;
         this.gameName = gameName;

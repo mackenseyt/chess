@@ -6,6 +6,7 @@ package dataAccess;
 //updateGame: Updates a chess game. It should replace the chess game string corresponding to a given gameID.
 //            This is used when players join a game or when a move is made.
 
+import chess.ChessGame;
 import model.GameData;
 
 import java.util.ArrayList;
@@ -15,33 +16,25 @@ import java.util.Map;
 
 public class GameDAO{
     private static final Map<Integer, GameData> storage = new HashMap<>();
-    private static int nextGameID = 1;
 
-    public static Integer createGame(String gameName) throws DataAccessException{
 
+    public static Integer createGame(GameData game) throws DataAccessException{
         for (GameData gameData : storage.values()) {
-            if (gameData.getGameName().equals(gameName)) {
-                throw new DataAccessException("Game with name " + gameName + " already exists");
+            if (game.getGameName().equals(gameData.getGameName())) {
+                throw new DataAccessException("Game with name " + gameData.getGameName() + " already exists");
             }
         }
-
-        int gameID = nextGameID++;
-        GameData newGame = new GameData(gameID, null, null, gameName, null);
-        storage.put(gameID, newGame);
-        return gameID;
+        storage.put(game.getGameID(), game);
+        return game.getGameID();
     }
 
-    private GameData getGame(Integer id)throws DataAccessException{
+    public GameData getGame(Integer id){
         GameData game = storage.get(id);
-        if(game == null){
-            throw new DataAccessException("Game does not exist");
-        }
         return game;
     }
 
     public static ArrayList<GameData> listGames() throws DataAccessException{
 //        check auth tokens
-
         return new ArrayList<>(storage.values());
     }
 
@@ -54,5 +47,12 @@ public class GameDAO{
 
     public void clear() {
         storage.clear();
+    }
+
+    public void claimGame(String username, ChessGame.TeamColor teamColor, int i) {
+        var game = getGame(i);
+//        user can watch
+        if(teamColor == null) return;
+        throw new RuntimeException("not written");
     }
 }

@@ -2,14 +2,25 @@ package model;
 
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class AuthData {
-    private final String authToken;
-    private final String username;
+    private String authToken;
+    private String username;
 
-    AuthData(String authToken, String username){
+    public AuthData(){}
+
+    public AuthData(String username){
+        this.authToken = generateAuthToken();
+        this.username = username;
+    }
+    public AuthData(String username, String authToken){
         this.authToken = authToken;
         this.username = username;
+    }
+
+    private String generateAuthToken() {
+        return UUID.randomUUID().toString();
     }
 
     public String getAuthToken() {
