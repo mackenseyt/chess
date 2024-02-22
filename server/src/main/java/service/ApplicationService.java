@@ -1,21 +1,21 @@
 package service;
-import dataAccess.AuthDAO;
+import dataAccess.AuthDao;
 import dataAccess.DataAccessException;
-import dataAccess.GameDAO;
-import dataAccess.UserDAO;
+import dataAccess.GameDao;
+import dataAccess.UserDao;
 
 
 public class ApplicationService {
 
-    private static final AuthDAO authDAO;
-    private static final UserDAO userDAO;
-    private static final GameDAO gameDAO;
+    private static final AuthDao authDAO;
+    private static final UserDao userDAO;
+    private static final GameDao gameDAO;
 
     static {
         try {
-            authDAO = new AuthDAO();
-            userDAO = new UserDAO();
-            gameDAO = new GameDAO();
+            authDAO = new AuthDao();
+            userDAO = new UserDao();
+            gameDAO = new GameDao();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

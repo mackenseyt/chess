@@ -1,10 +1,10 @@
 package service;
 
 import model.AuthData;
-import dataAccess.AuthDAO;
+import dataAccess.AuthDao;
 import dataAccess.DataAccessException;
 import model.UserData;
-import dataAccess.UserDAO;
+import dataAccess.UserDao;
 import request.LoginRequest;
 import request.RegisterRequest;
 import response.LoginResponse;
@@ -12,8 +12,8 @@ import response.LoginResponse;
 
 
 public class UserService {
-    private static final AuthDAO authDAO = new AuthDAO();
-    private static final UserDAO userDAO = new UserDAO();
+    private static final AuthDao authDAO = new AuthDao();
+    private static final UserDao userDAO = new UserDao();
 
 //    public UserService(UserDAO userDao){
 //        userDAO = userDao;

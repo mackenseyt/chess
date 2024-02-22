@@ -5,7 +5,7 @@ import model.UserData;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserDAO {
+public class UserDao {
 
     private static final Map<String, UserData> userStorage = new HashMap<>();
 
@@ -37,13 +37,10 @@ public class UserDAO {
     public boolean containsUser(String username) {
         return userStorage.containsKey(username);
     }
-//
-//    public void deleteUser(String username) throws DataAccessException{
-//        if(!userStoarage.containsKey(username)){
-//            throw new DataAccessException("user does not exist");
-//        }
-//        userStoarage.remove(username);
-//    }
+
+    public boolean isClear(){
+        return userStorage.isEmpty();
+    }
 
 
 }

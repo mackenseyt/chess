@@ -10,11 +10,10 @@ import chess.ChessGame;
 import model.GameData;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GameDAO{
+public class GameDao {
     private static final Map<Integer, GameData> storage = new HashMap<>();
 
 
@@ -71,5 +70,8 @@ public class GameDAO{
         }
         updateGame(game);
 //        GameData game = new GameData(gameID, teamColor, username);
+    }
+    public boolean isClear(){
+        return storage.isEmpty();
     }
 }

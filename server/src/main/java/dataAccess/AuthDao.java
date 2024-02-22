@@ -1,15 +1,11 @@
 package dataAccess;
 
 import model.AuthData;
-import model.UserData;
 
-import java.sql.Array;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-public class AuthDAO {
+public class AuthDao {
 
     private static final HashMap<String, String> storage = new HashMap<>();
 
@@ -50,6 +46,10 @@ public class AuthDAO {
 
     public void clear() {
         storage.clear();
+    }
+
+    public boolean isClear(){
+        return storage.isEmpty();
     }
 
 
