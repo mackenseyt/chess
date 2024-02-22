@@ -24,12 +24,11 @@ public class SessionHandler {
             response.body(new Gson().toJson(loginResponse));
         }catch(DataAccessException e){
             response.status(401);
-            response.body(new Gson().toJson(Map.of("message", "Username or password is incorrect")));
+            throw e;
         }
     }
     public void logout(String authToken, Response response) throws DataAccessException{
         userService.logout(authToken);
-        response.status(200);
         response.body(new Gson().toJson(new JsonObject()));
     }
 

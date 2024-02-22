@@ -11,12 +11,12 @@ public class UserDAO {
 
 
 //create a new user
-    public static void registerUser(String username, String password, String email){
+    public void registerUser(String username, String password, String email){
 //        if(userStorage.containsKey(username)){
 //            throw new DataAccessException("Username already taken");
 //        }
         UserData user = new UserData(username, password, email);
-        userStorage.put(username, user);
+        userStorage.put(user.getUsername(), user);
     }
 //    get user by username
     public UserData getUser(String username){
@@ -32,6 +32,10 @@ public class UserDAO {
     public void clear() {
         userStorage.clear();
 //        authTokens.clear();
+    }
+
+    public boolean containsUser(String username) {
+        return userStorage.containsKey(username);
     }
 //
 //    public void deleteUser(String username) throws DataAccessException{

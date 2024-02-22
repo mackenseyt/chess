@@ -26,22 +26,23 @@ public class UserService {
 //            throw new RuntimeException(e);
 //        }
 //    }
-    public static LoginResponse register(RegisterRequest request) throws DataAccessException {
-        if(userDAO.getUser(request.username())!= null){
-            return null;
+    public LoginResponse register(RegisterRequest request) throws DataAccessException {
+        if(userDAO.containsUser(request.username())){
+            throw new DataAccessException("Name in use");
         }
         userDAO.registerUser(request.username(), request.password(), request.email());
         var authToken = new AuthData(request.username());
+        authDAO.addAuth(authToken);
         return new LoginResponse(request.username(), authToken.getAuthToken());
     }
 
     public LoginResponse login(LoginRequest request) throws  DataAccessException{
-        UserData user = userDAO.getUser(request.username());
-        if(user == null || !user.getPassword().equals(request.password())){
+        Boolean user = userDAO.containsUser(request.username());
+        UserData userObj = userDAO.getUser(request.username());
+        if(!user || !userObj.getPassword().equals(request.password())){
             throw new DataAccessException("Username or password is incorrect");
         }
         var authToken = new AuthData(request.username());
-//        var username = authData.getUsername();
         authDAO.addAuth(authToken);
         return new LoginResponse(authToken.getUsername(), authToken.getAuthToken());
 
@@ -52,7 +53,7 @@ public class UserService {
     }
 
     public void authoriseUser(String authToken) throws DataAccessException{
-        if(authDAO.getAuth(authToken) == null){
+        if(!authDAO.containsAuth(authToken)){
             throw new DataAccessException("unauthorized");
         }
     }

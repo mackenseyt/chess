@@ -14,8 +14,8 @@ import java.util.Collection;
 
 public class GameService {
     private final AuthDAO authDAO = new AuthDAO();
-    private static final GameDAO gameDao = new GameDAO();
-    public static CreateGameResponse createGame(CreateGameRequest request) throws DataAccessException {
+    private final GameDAO gameDao = new GameDAO();
+    public CreateGameResponse createGame(CreateGameRequest request) throws DataAccessException {
         // Logic to create a new game
 //        check auth token
         var game = new GameData(request.gameName());
@@ -33,7 +33,7 @@ public class GameService {
         var username = authDAO.getAuth(request.authToken()).getUsername();
         gameDao.claimGame(username, request.teamColor(), request.gameID());
     }
-    public static ListGameResponse listGames() throws DataAccessException {
+    public ListGameResponse listGames() throws DataAccessException {
         // Return a list of GameData objects
         ArrayList<GameData> games = new ArrayList<>(gameDao.listGames());
         return new ListGameResponse(games);
