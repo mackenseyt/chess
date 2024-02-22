@@ -18,14 +18,14 @@ public class GameDAO{
     private static final Map<Integer, GameData> storage = new HashMap<>();
 
 
-    public static Integer createGame(GameData game) throws DataAccessException{
+    public void createGame(GameData game) throws DataAccessException{
         for (GameData gameData : storage.values()) {
             if (game.getGameName().equals(gameData.getGameName())) {
                 throw new DataAccessException("Game with name " + gameData.getGameName() + " already exists");
             }
         }
         storage.put(game.getGameID(), game);
-        return game.getGameID();
+//        return game.getGameID();
     }
 
     public GameData getGame(Integer id){
@@ -33,7 +33,7 @@ public class GameDAO{
         return game;
     }
 
-    public static ArrayList<GameData> listGames() throws DataAccessException{
+    public ArrayList<GameData> listGames() throws DataAccessException{
 //        check auth tokens
         return new ArrayList<>(storage.values());
     }
@@ -49,10 +49,27 @@ public class GameDAO{
         storage.clear();
     }
 
-    public void claimGame(String username, ChessGame.TeamColor teamColor, int i) {
-        var game = getGame(i);
+    public void claimGame(String username, ChessGame.TeamColor teamColor, int i) throws DataAccessException{
+        GameData game = getGame(i);
 //        user can watch
         if(teamColor == null) return;
-        throw new RuntimeException("not written");
+        switch (teamColor){
+            case WHITE:
+                if(game.getWhiteUsername() == null){
+                    game.setWhiteUsername(username);
+                }else{
+                    throw new DataAccessException("already taken");
+                }
+                break;
+            case BLACK:
+                if(game.getBlackUsername() == null){
+                    game.setBlackUsername(username);
+                }else{
+                    throw new DataAccessException("already taken");
+                }
+                break;
+        }
+        updateGame(game);
+//        GameData game = new GameData(gameID, teamColor, username);
     }
 }

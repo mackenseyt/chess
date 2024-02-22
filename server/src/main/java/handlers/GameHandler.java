@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class GameHandler {
     private static final GameService gameService = new GameService();
-    public static void joinGame(Map<String, Object> body, String authToken, Response response) throws DataAccessException {
+    public void joinGame(Map<String, Object> body, String authToken, Response response) throws DataAccessException {
         body.put("authToken", authToken);
         JoinGameRequest joinGameRequest = new Gson().fromJson(new Gson().toJson(body), JoinGameRequest.class);
 

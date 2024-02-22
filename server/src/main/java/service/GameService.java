@@ -31,7 +31,7 @@ public class GameService {
             throw new DataAccessException("Game not found");
         }
         var username = authDAO.getAuth(request.authToken()).getUsername();
-        gameDao.claimGame(username, request.teamColor(), request.gameID());
+        gameDao.claimGame(username, request.playerColor(), request.gameID());
     }
     public ListGameResponse listGames() throws DataAccessException {
         // Return a list of GameData objects

@@ -1,6 +1,7 @@
 package handlers;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import dataAccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
@@ -16,6 +17,7 @@ public class UserHandler {
     public void authorizeUser(String authToken, Response response) throws DataAccessException {
         try{
             userService.authoriseUser(authToken);
+
         }catch(DataAccessException e){
             response.status(401);
             throw e;

@@ -7,16 +7,14 @@ import java.util.Objects;
 
 public class GameData {
     private final int gameID;
-    private final String whiteUsername;
-    private final String blackUsername;
+    private String whiteUsername;
+    private String blackUsername;
     private final String gameName;
     private final ChessGame game;
-    private static int nextGameID = 0;
+    private static int nextGameID = 1;
 
     public GameData(String gameName){
         this.gameID = nextGameID++;
-        this.whiteUsername = null;
-        this.blackUsername = null;
         this.gameName = gameName;
         this.game = new ChessGame();
         
@@ -37,9 +35,14 @@ public class GameData {
     public String getWhiteUsername() {
         return whiteUsername;
     }
-
+    public void setWhiteUsername(String whiteUsername) {
+        this.whiteUsername = whiteUsername;
+    }
     public String getBlackUsername() {
         return blackUsername;
+    }
+    public void setBlackUsername(String blackUsername){
+        this.blackUsername = blackUsername;
     }
 
     public String getGameName() {
@@ -73,4 +76,6 @@ public class GameData {
     public int hashCode() {
         return Objects.hash(gameID, whiteUsername, blackUsername, gameName, game);
     }
+
+
 }

@@ -29,7 +29,7 @@ public class AuthDAO {
     public boolean containsAuth(String token){
         return storage.containsValue(token);
     }
-    public static AuthData getAuth(String token){
+    public AuthData getAuth(String token){
         for (Map.Entry<String, String> entry : storage.entrySet()) {
             if (entry.getValue().equals(token)) {
                 return new AuthData(entry.getKey(), entry.getValue());
