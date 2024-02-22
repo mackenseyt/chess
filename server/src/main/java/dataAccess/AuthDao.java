@@ -7,40 +7,27 @@ import java.util.Map;
 
 public class AuthDao {
 
-    private static final HashMap<String, String> storage = new HashMap<>();
+    public static final HashMap<String, String> storage = new HashMap<>();
 
-//    public AuthDAO(String username){
-//        this.authToken = createAuth(username);
-//        return authToken;
-//    }
 
     public void addAuth(AuthData authToken){
-        storage.put(authToken.getUsername(), authToken.getAuthToken());
+        storage.put(authToken.getAuthToken(),authToken.getUsername());
     }
     public AuthData createAuth(String username){
         AuthData authToken = new AuthData(username);
-        storage.put(authToken.getUsername(), authToken.getAuthToken());
+        storage.put( authToken.getAuthToken(),authToken.getUsername());
         return authToken;
     }
     public boolean containsAuth(String token){
-        return storage.containsValue(token);
+        HashMap<String, String> map = this.storage;
+        return storage.containsKey(token);
     }
     public AuthData getAuth(String token){
-        for (Map.Entry<String, String> entry : storage.entrySet()) {
-            if (entry.getValue().equals(token)) {
-                return new AuthData(entry.getKey(), entry.getValue());
-            }
-        }
-        return null;
+        return new AuthData(storage.get(token), token);
     }
 
 
     public static void deleteAuth(String token){
-//        for (Map.Entry<String, String> entry : storage.entrySet()) {
-//            if (entry.getValue().equals(token)) {
-//                storage.remove(token);
-//            }
-//        }
         storage.remove(token);
     }
 
