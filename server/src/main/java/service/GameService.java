@@ -36,5 +36,8 @@ public class GameService {
         ArrayList<GameData> games = new ArrayList<>(gameDao.listGames());
         return new ListGameResponse(games);
     }
+//    public void clear(){
+//        gameDao.clear();
+//    }
 
 }

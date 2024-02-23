@@ -1,6 +1,7 @@
 package dataAccess;
 
 import model.UserData;
+import org.eclipse.jetty.server.Authentication;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,22 +13,16 @@ public class UserDao {
 
 //create a new user
     public void registerUser(String username, String password, String email){
-//        if(userStorage.containsKey(username)){
-//            throw new DataAccessException("Username already taken");
-//        }
         UserData user = new UserData(username, password, email);
+        userStorage.put(user.getUsername(), user);
+    }
+    public void createUser(UserData user){
         userStorage.put(user.getUsername(), user);
     }
 //    get user by username
     public UserData getUser(String username){
         return userStorage.get(username);
     }
-
-//    public String createAuthToken(String username) {
-//        String authToken = UUID.randomUUID().toString();
-//        authTokens.put(username, authToken);
-//        return authToken;
-//    }
 
     public void clear() {
         userStorage.clear();

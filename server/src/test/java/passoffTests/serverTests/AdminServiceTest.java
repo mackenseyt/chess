@@ -25,8 +25,6 @@ class AdminServiceTest {
         Assertions.assertDoesNotThrow(gameDao::clear);
         Assertions.assertDoesNotThrow(userDao::clear);
         Assertions.assertDoesNotThrow(authTokenDao::clear);
-
-        // check that the database is clear to start
         Assertions.assertTrue(userDao.isClear());
         Assertions.assertTrue(authTokenDao.isClear());
         Assertions.assertTrue(gameDao.isClear());
