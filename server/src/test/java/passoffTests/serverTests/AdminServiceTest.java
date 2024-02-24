@@ -24,9 +24,9 @@ class AdminServiceTest {
         Assertions.assertDoesNotThrow(gameDao::clear);
         Assertions.assertDoesNotThrow(userDao::clear);
         Assertions.assertDoesNotThrow(authTokenDao::clear);
-        Assertions.assertTrue(userDao.isClear());
-        Assertions.assertTrue(authTokenDao.isClear());
-        Assertions.assertTrue(gameDao.isClear());
+        Assertions.assertTrue(userDao.userStorage.isEmpty());
+        Assertions.assertTrue(authTokenDao.storage.isEmpty());
+        Assertions.assertTrue(gameDao.storage.isEmpty());
     }
 
     @Test
@@ -42,16 +42,16 @@ class AdminServiceTest {
         Assertions.assertDoesNotThrow(() -> gameDao.addGame(testGame));
 
         // check the database is not empty
-        Assertions.assertFalse(userDao.isClear());
-        Assertions.assertFalse(authTokenDao.isClear());
-        Assertions.assertFalse(gameDao.isClear());
+        Assertions.assertFalse(userDao.userStorage.isEmpty());
+        Assertions.assertFalse(authTokenDao.storage.isEmpty());
+        Assertions.assertFalse(gameDao.storage.isEmpty());
 
         Assertions.assertDoesNotThrow(testAdmin::clearAllData);
 
         // check that the database is clear
-        Assertions.assertTrue(userDao.isClear());
-        Assertions.assertTrue(authTokenDao.isClear());
-        Assertions.assertTrue(gameDao.isClear());
+        Assertions.assertTrue(userDao.userStorage.isEmpty());
+        Assertions.assertTrue(authTokenDao.storage.isEmpty());
+        Assertions.assertTrue(gameDao.storage.isEmpty());
     }
 }
 

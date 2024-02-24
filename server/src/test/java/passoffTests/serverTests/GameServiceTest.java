@@ -35,11 +35,12 @@ public class GameServiceTest {
         Assertions.assertDoesNotThrow(userDao::clear);
         Assertions.assertDoesNotThrow(authTokenDao::clear);
 
-        Assertions.assertTrue(userDao.isClear());
-        Assertions.assertTrue(authTokenDao.isClear());
-        Assertions.assertTrue(gameDao.isClear());
+        Assertions.assertTrue(userDao.userStorage.isEmpty());
+        Assertions.assertTrue(authTokenDao.storage.isEmpty());
+        Assertions.assertTrue(gameDao.storage.isEmpty());
 
-        Assertions.assertDoesNotThrow(()-> userDao.addUser(testUser));
+        Assertions.assertDoesNotThrow(()-> userDao.registerUser("testUser", "testPassword", "test@test.com"));
+
         Assertions.assertDoesNotThrow(()-> authTokenDao.addAuth(testAuth));
     }
 

@@ -31,9 +31,6 @@ public class AuthDao {
         storage.clear();
     }
 
-    public boolean isClear(){
-        return storage.isEmpty();
-    }
 
 
 }

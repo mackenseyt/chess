@@ -7,15 +7,12 @@ import java.util.Map;
 
 public class UserDao {
 
-    private static final Map<String, UserData> userStorage = new HashMap<>();
+    public static final Map<String, UserData> userStorage = new HashMap<>();
 
 
 //create a new user
     public void registerUser(String username, String password, String email){
         UserData user = new UserData(username, password, email);
-        userStorage.put(user.getUsername(), user);
-    }
-    public void addUser(UserData user){
         userStorage.put(user.getUsername(), user);
     }
 
@@ -31,9 +28,6 @@ public class UserDao {
         return userStorage.containsKey(username);
     }
 
-    public boolean isClear(){
-        return userStorage.isEmpty();
-    }
 
 
 }

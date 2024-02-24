@@ -27,9 +27,9 @@ public class UserServiceTest {
         Assertions.assertDoesNotThrow(userDao::clear);
         Assertions.assertDoesNotThrow(authDao::clear);
 
-        Assertions.assertTrue(userDao.isClear());
-        Assertions.assertTrue(authDao.isClear());
-        Assertions.assertTrue(gameDao.isClear());
+        Assertions.assertTrue(userDao.userStorage.isEmpty());
+        Assertions.assertTrue(authDao.storage.isEmpty());
+        Assertions.assertTrue(gameDao.storage.isEmpty());
     }
 
     @Test
@@ -55,8 +55,8 @@ public class UserServiceTest {
     @Test
     @DisplayName("Successful login")
     void login(){
-        UserData testUser = new UserData("testUser", "testPassword", "test@test.com");
-        Assertions.assertDoesNotThrow(()-> userDao.addUser(testUser));
+
+        Assertions.assertDoesNotThrow(()-> userDao.registerUser("testUser", "testPassword", "test@test.com"));
 
         LoginRequest loginRequest = new LoginRequest(testUser.getUsername(), testUser.getPassword());
         LoginResponse loginResponse = Assertions.assertDoesNotThrow(()-> service.login(loginRequest));
@@ -78,8 +78,8 @@ public class UserServiceTest {
     @Test
     @DisplayName("Successful logout")
     void logout(){
-        UserData testUser = new UserData("testUser", "testPassword", "test@test.com");
-        Assertions.assertDoesNotThrow(()-> userDao.addUser(testUser));
+        Assertions.assertDoesNotThrow(()-> userDao.registerUser("testUser", "testPassword", "test@test.com"));
+
 
         LoginRequest loginRequest = new LoginRequest(testUser.getUsername(), testUser.getPassword());
         LoginResponse loginResponse = Assertions.assertDoesNotThrow(()-> service.login(loginRequest));
@@ -95,8 +95,8 @@ public class UserServiceTest {
     @Test
     @DisplayName("logout fail")
     void logoutFail(){
-        UserData testUser = new UserData("testUser", "testPassword", "test@test.com");
-        Assertions.assertDoesNotThrow(()-> userDao.addUser(testUser));
+        Assertions.assertDoesNotThrow(()-> userDao.registerUser("testUser", "testPassword", "test@test.com"));
+
 
         LoginRequest loginRequest = new LoginRequest(testUser.getUsername(), testUser.getPassword());
         LoginResponse loginResponse = Assertions.assertDoesNotThrow(() -> service.login(loginRequest));
@@ -115,8 +115,8 @@ public class UserServiceTest {
     @Test
     @DisplayName("Successful authorize user")
     void authorizeUser(){
-        UserData testUser = new UserData("testUser", "testPassword", "test@test.com");
-        Assertions.assertDoesNotThrow(()-> userDao.addUser(testUser));
+        Assertions.assertDoesNotThrow(()-> userDao.registerUser("testUser", "testPassword", "test@test.com"));
+
 
         AuthData testToken = new AuthData(testUser.getUsername());
         Assertions.assertDoesNotThrow(() -> authDao.addAuth(testToken));

@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GameDao {
-    private static final Map<Integer, GameData> storage = new HashMap<>();
+    public static final Map<Integer, GameData> storage = new HashMap<>();
 
 
     public void addGame(GameData game) throws DataAccessException{
@@ -69,9 +69,6 @@ public class GameDao {
                 break;
         }
         updateGame(game);
-//        GameData game = new GameData(gameID, teamColor, username);
-    }
-    public boolean isClear(){
-        return storage.isEmpty();
+
     }
 }
