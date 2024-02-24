@@ -56,11 +56,11 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         return switch(type){
             case PAWN -> movePawn(board, myPosition);
-            case KING -> moveKing(board, myPosition);
-            case KNIGHT -> moveKnight(board, myPosition);
-            case QUEEN -> moveQueen(board, myPosition);
-            case ROOK -> moveRook(board, myPosition);
-            case BISHOP -> moveBishop(board, myPosition);
+            case KING -> moveOne(board, myPosition,new int[][]{{1,0},{0,-1},{-1,0},{0,1}, {1,1},{1,-1},{-1,1},{-1,-1}});
+            case KNIGHT -> moveOne(board, myPosition, new int[][]{{2,1},{2,-1},{-2,1},{-2,-1},{1,2},{1,-2},{-1,2},{-1,-2}});
+            case QUEEN -> moveLinear(board, myPosition,new int[][]{{1,0},{0,-1},{-1,0},{0,1}, {1,1},{1,-1},{-1,1},{-1,-1}});
+            case ROOK -> moveLinear(board, myPosition, new int[][]{{1,0},{0,-1},{-1,0},{0,1}});
+            case BISHOP -> moveLinear(board, myPosition, new int[][]{{1,1},{1,-1},{-1,1},{-1,-1}});
         };
     }
 
@@ -93,53 +93,19 @@ public class ChessPiece {
             targetCol += incCol;
         }
     }
-    private Collection<ChessMove> moveBishop(ChessBoard board, ChessPosition myPosition) {
+
+    private Collection<ChessMove> moveLinear(ChessBoard board, ChessPosition myPosition, int[][] moves){
         Set<ChessMove> validMoves = new HashSet<>();
-        int[][] moves = {{1,1},{1,-1},{-1,1},{-1,-1}};
         for(int[] move: moves){
             keepGoing(board, myPosition, move[0], move[1], validMoves);
         }
         return validMoves;
     }
 
-    private Collection<ChessMove> moveRook(ChessBoard board, ChessPosition myPosition) {
-        Set<ChessMove> validMoves = new HashSet<>();
-        int[][] moves = {{1,0},{0,-1},{-1,0},{0,1}};
-        for(int[] move: moves){
-            keepGoing(board, myPosition, move[0], move[1], validMoves);
-        }
-        return validMoves;
-    }
-
-    private Collection<ChessMove> moveQueen(ChessBoard board, ChessPosition myPosition) {
-        Set<ChessMove> validMoves = new HashSet<>();
-        int[][] moves = {{1,0},{0,-1},{-1,0},{0,1}, {1,1},{1,-1},{-1,1},{-1,-1}};
-        for(int[] move: moves){
-            keepGoing(board, myPosition, move[0], move[1], validMoves);
-        }
-        return validMoves;
-    }
-
-    private Collection<ChessMove> moveKnight(ChessBoard board, ChessPosition myPosition) {
+    private Collection<ChessMove> moveOne(ChessBoard board, ChessPosition myPosition, int[][] moves){
         Set<ChessMove> validMoves = new HashSet<>();
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
-        int[][] moves = {{2,1},{2,-1},{-2,1},{-2,-1},{1,2},{1,-2},{-1,2},{-1,-2}};
-        for(int[] move:moves){
-            int targetRow = row+move[0];
-            int targetCol = col + move[1];
-            if(isValidMove(board, myPosition, new ChessPosition(targetRow, targetCol))){
-                validMoves.add(new ChessMove(myPosition, new ChessPosition(targetRow, targetCol)));
-            }
-        }
-        return validMoves;
-    }
-
-    private Collection<ChessMove> moveKing(ChessBoard board, ChessPosition myPosition) {
-        Set<ChessMove> validMoves = new HashSet<>();
-        int row = myPosition.getRow();
-        int col = myPosition.getColumn();
-        int[][] moves = {{1,0},{0,-1},{-1,0},{0,1}, {1,1},{1,-1},{-1,1},{-1,-1}};
         for(int[] move:moves){
             int targetRow = row+move[0];
             int targetCol = col + move[1];
