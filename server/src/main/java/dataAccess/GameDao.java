@@ -17,7 +17,7 @@ public class GameDao {
     private static final Map<Integer, GameData> storage = new HashMap<>();
 
 
-    public void createGame(GameData game) throws DataAccessException{
+    public void addGame(GameData game) throws DataAccessException{
         for (GameData gameData : storage.values()) {
             if (game.getGameName().equals(gameData.getGameName())) {
                 throw new DataAccessException("Game with name " + gameData.getGameName() + " already exists");

@@ -17,7 +17,7 @@ public class GameService {
         // Logic to create a new game
 //        check auth token
         var game = new GameData(request.gameName());
-        gameDao.createGame(game);
+        gameDao.addGame(game);
 
 //        initialize game
         return new CreateGameResponse(game.getGameID());
@@ -36,8 +36,6 @@ public class GameService {
         ArrayList<GameData> games = new ArrayList<>(gameDao.listGames());
         return new ListGameResponse(games);
     }
-//    public void clear(){
-//        gameDao.clear();
-//    }
+
 
 }

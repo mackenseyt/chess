@@ -1,7 +1,6 @@
 package dataAccess;
 
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +15,7 @@ public class UserDao {
         UserData user = new UserData(username, password, email);
         userStorage.put(user.getUsername(), user);
     }
-    public void createUser(UserData user){
+    public void addUser(UserData user){
         userStorage.put(user.getUsername(), user);
     }
 //    get user by username

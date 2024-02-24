@@ -12,8 +12,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import passoffTests.testClasses.TestException;
+import request.CreateGameRequest;
 import request.JoinGameRequest;
+import response.CreateGameResponse;
+import response.ListGameResponse;
 import service.GameService;
 
 
@@ -37,18 +39,30 @@ public class GameServiceTest {
         Assertions.assertTrue(authTokenDao.isClear());
         Assertions.assertTrue(gameDao.isClear());
 
-        Assertions.assertDoesNotThrow(()-> userDao.createUser(testUser));
+        Assertions.assertDoesNotThrow(()-> userDao.addUser(testUser));
         Assertions.assertDoesNotThrow(()-> authTokenDao.addAuth(testAuth));
     }
 
     @Test
     @DisplayName("CreateGameSuccess")
     public void createGame(){
+        CreateGameRequest createGameRequest = new CreateGameRequest("testGame");
+        CreateGameResponse createGameResponse = Assertions.assertDoesNotThrow(()->service.createGame(createGameRequest));
 
+        GameData testGame = Assertions.assertDoesNotThrow(()-> gameDao.getGame(createGameResponse.gameID()));
+        Assertions.assertNotNull(testGame);
+        Assertions.assertEquals(createGameRequest.gameName(), testGame.getGameName());
     }
+
     @Test
     @DisplayName("CreateGame Fail")
     public void createGameFail(){
+        var testGame = new GameData("testGame");
+        testGame.setGameID(testGame.getGameID() + 1);
+        Assertions.assertDoesNotThrow(()-> gameDao.addGame(testGame));
+
+        CreateGameRequest createGameRequest = new CreateGameRequest("testGame");
+        Assertions.assertThrows(DataAccessException.class, ()-> service.createGame(createGameRequest));
 
     }
 
@@ -56,7 +70,7 @@ public class GameServiceTest {
     @DisplayName("Join game")
     public void joinGame(){
         var testGame = new GameData("testGame");
-        Assertions.assertDoesNotThrow(()-> gameDao.createGame(testGame));
+        Assertions.assertDoesNotThrow(()-> gameDao.addGame(testGame));
 
         //join the game
         JoinGameRequest joinGameRequest = new JoinGameRequest(ChessGame.TeamColor.BLACK, testGame.getGameID(), testAuth.getAuthToken());
@@ -66,22 +80,33 @@ public class GameServiceTest {
         Assertions.assertEquals(testUser.getUsername(), Assertions.assertDoesNotThrow(()->gameDao.getGame(testGame.getGameID()).getBlackUsername()));
         Assertions.assertNull(Assertions.assertDoesNotThrow(()->gameDao.getGame(testGame.getGameID()).getWhiteUsername()));
     }
+
     @Test
     @DisplayName("Join game fail")
     public void joinGameFail(){
+        GameData testGame = new GameData("testGame");
+        Assertions.assertDoesNotThrow(()-> gameDao.addGame(testGame));
 
+        JoinGameRequest joinGameRequest = new JoinGameRequest(ChessGame.TeamColor.BLACK, 0, testAuth.getAuthToken());
+        Assertions.assertThrows(DataAccessException.class, ()-> service.joinGame(joinGameRequest));
     }
 
     @Test
     @DisplayName("List game Success")
     public void listGame(){
+        GameData testGame1 = new GameData("testGame1");
+        GameData testGame2 = new GameData("testGame2");
+
+        Assertions.assertDoesNotThrow(()-> gameDao.addGame(testGame1));
+        Assertions.assertDoesNotThrow(()-> gameDao.addGame(testGame2));
+
+        ListGameResponse listGameResponse = Assertions.assertDoesNotThrow(service::listGames);
+        Assertions.assertEquals(2, listGameResponse.games().size());
+        Assertions.assertTrue(listGameResponse.games().contains(testGame1));
+        Assertions.assertTrue(listGameResponse.games().contains(testGame2));
 
     }
-    @Test
-    @DisplayName("List Games Fail")
-    public void listGameFail(){
 
-    }
 
 }
 

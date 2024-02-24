@@ -1,7 +1,6 @@
 package passoffTests.serverTests;
 
 import dataAccess.AuthDao;
-import dataAccess.DataAccessException;
 import dataAccess.GameDao;
 import dataAccess.UserDao;
 import model.AuthData;
@@ -40,7 +39,7 @@ class AdminServiceTest {
         AuthData testToken = new AuthData("testUser");
         Assertions.assertDoesNotThrow(() -> authTokenDao.addAuth(testToken));
         GameData testGame = new GameData("testGame");
-        Assertions.assertDoesNotThrow(() -> gameDao.createGame(testGame));
+        Assertions.assertDoesNotThrow(() -> gameDao.addGame(testGame));
 
         // check the database is not empty
         Assertions.assertFalse(userDao.isClear());

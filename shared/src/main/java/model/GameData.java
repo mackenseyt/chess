@@ -6,7 +6,7 @@ import chess.ChessGame;
 import java.util.Objects;
 
 public class GameData {
-    private final int gameID;
+    private int gameID;
     private String whiteUsername;
     private String blackUsername;
     private final String gameName;
@@ -30,6 +30,9 @@ public class GameData {
 
     public int getGameID() {
         return gameID;
+    }
+    public void setGameID(int gameID){
+        this.gameID = gameID;
     }
 
     public String getWhiteUsername() {
