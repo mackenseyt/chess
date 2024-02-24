@@ -59,7 +59,6 @@ public class GameServiceTest {
     @DisplayName("CreateGame Fail")
     public void createGameFail(){
         var testGame = new GameData("testGame");
-        testGame.setGameID(testGame.getGameID() + 1);
         Assertions.assertDoesNotThrow(()-> gameDao.addGame(testGame));
 
         CreateGameRequest createGameRequest = new CreateGameRequest("testGame");

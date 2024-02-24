@@ -23,9 +23,6 @@ public class GameData {
     public int getGameID() {
         return gameID;
     }
-    public void setGameID(int gameID){
-        this.gameID = gameID;
-    }
 
     public String getWhiteUsername() {
         return whiteUsername;

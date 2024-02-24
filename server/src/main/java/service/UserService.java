@@ -28,7 +28,7 @@ public class UserService {
     public LoginResponse login(LoginRequest request) throws  DataAccessException{
         Boolean user = userDAO.containsUser(request.username());
         UserData userObj = userDAO.getUser(request.username());
-        if(!user || !userObj.getPassword().equals(request.password())){
+        if(!user || !userObj.getPassword().equals(request.password()) || userObj.getEmail() == null){
             throw new DataAccessException("Username or password is incorrect");
         }
         var authToken = new AuthData(request.username());
