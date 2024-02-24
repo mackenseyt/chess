@@ -15,6 +15,9 @@ public class UserDao {
         UserData user = new UserData(username, password, email);
         userStorage.put(user.getUsername(), user);
     }
+    public void addUser(UserData user){
+        userStorage.put(user.getUsername(), user);
+    }
 
     public UserData getUser(String username){
         return userStorage.get(username);
@@ -22,14 +25,15 @@ public class UserDao {
 
     public void clear() {
         userStorage.clear();
-//        authTokens.clear();
     }
 
     public boolean containsUser(String username) {
         return userStorage.containsKey(username);
     }
 
-
+    public boolean isClear(){
+        return userStorage.isEmpty();
+    }
 
 
 }

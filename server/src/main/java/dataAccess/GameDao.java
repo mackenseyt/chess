@@ -24,7 +24,7 @@ public class GameDao {
             }
         }
         storage.put(game.getGameID(), game);
-//        return game.getGameID();
+
     }
 
     public GameData getGame(Integer id){
