@@ -15,10 +15,7 @@ public class UserDao {
         UserData user = new UserData(username, password, email);
         userStorage.put(user.getUsername(), user);
     }
-    public void addUser(UserData user){
-        userStorage.put(user.getUsername(), user);
-    }
-//    get user by username
+
     public UserData getUser(String username){
         return userStorage.get(username);
     }
@@ -32,9 +29,7 @@ public class UserDao {
         return userStorage.containsKey(username);
     }
 
-    public boolean isClear(){
-        return userStorage.isEmpty();
-    }
+
 
 
 }

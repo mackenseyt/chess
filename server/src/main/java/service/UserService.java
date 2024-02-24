@@ -15,17 +15,6 @@ public class UserService {
     private static final AuthDao authDAO = new AuthDao();
     private static final UserDao userDAO = new UserDao();
 
-//    public UserService(UserDAO userDao){
-//        userDAO = userDao;
-//    }
-//    static {
-//        try {
-//            authDAO = new AuthDAO();
-//            userDAO = new UserDAO();
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
     public LoginResponse register(RegisterRequest request) throws DataAccessException {
         if(userDAO.containsUser(request.username())){
             throw new DataAccessException("Name in use");

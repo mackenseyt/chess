@@ -13,11 +13,7 @@ public class AuthDao {
     public void addAuth(AuthData authToken){
         storage.put(authToken.getAuthToken(),authToken.getUsername());
     }
-    public AuthData createAuth(String username){
-        AuthData authToken = new AuthData(username);
-        storage.put( authToken.getAuthToken(),authToken.getUsername());
-        return authToken;
-    }
+
     public boolean containsAuth(String token){
         HashMap<String, String> map = this.storage;
         return storage.containsKey(token);
