@@ -1,28 +1,18 @@
 package service;
-import dataAccess.AuthDao;
-import dataAccess.DataAccessException;
-import dataAccess.GameDao;
-import dataAccess.UserDao;
+import dataAccess.sqlDao.AuthSqlDao;
+import dataAccess.sqlDao.GameSqlDao;
+import dataAccess.sqlDao.UserSqlDao;
 
 
 public class ApplicationService {
 
-    private static final AuthDao authDAO;
-    private static final UserDao userDAO;
-    private static final GameDao gameDAO;
-
-    static {
-        try {
-            authDAO = new AuthDao();
-            userDAO = new UserDao();
-            gameDAO = new GameDao();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private static final AuthSqlDao authDAO = new AuthSqlDao();
+    private static final UserSqlDao userDAO = new UserSqlDao();
+    private static final GameSqlDao gameDAO = new GameSqlDao();
 
 
-    public void clearAllData() throws DataAccessException{
+
+    public void clearAllData(){
         authDAO.clear();
         userDAO.clear();
         gameDAO.clear();

@@ -1,10 +1,10 @@
-package passoffTests.serverTests;
+package passoffTests.serverTests.serviceTests;
 
 import chess.ChessGame;
-import dataAccess.AuthDao;
+import dataAccess.memoryDao.AuthDao;
 import dataAccess.DataAccessException;
-import dataAccess.GameDao;
-import dataAccess.UserDao;
+import dataAccess.memoryDao.GameDao;
+import dataAccess.memoryDao.UserDao;
 import model.AuthData;
 import model.GameData;
 import model.UserData;

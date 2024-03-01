@@ -1,11 +1,12 @@
-package dataAccess;
+package dataAccess.memoryDao;
 
+import dataAccess.UserDaoInterface;
 import model.UserData;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserDao {
+public class UserDao implements UserDaoInterface {
 
     public static final Map<String, UserData> userStorage = new HashMap<>();
 

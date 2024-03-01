@@ -1,7 +1,7 @@
 package service;
-import dataAccess.AuthDao;
 import dataAccess.DataAccessException;
-import dataAccess.GameDao;
+import dataAccess.sqlDao.AuthSqlDao;
+import dataAccess.sqlDao.GameSqlDao;
 import model.GameData;
 import request.CreateGameRequest;
 import request.JoinGameRequest;
@@ -11,8 +11,8 @@ import response.ListGameResponse;
 import java.util.ArrayList;
 
 public class GameService {
-    private final AuthDao authDAO = new AuthDao();
-    private final GameDao gameDao = new GameDao();
+    private final AuthSqlDao authDAO = new AuthSqlDao();
+    private final GameSqlDao gameDao = new GameSqlDao();
     public CreateGameResponse createGame(CreateGameRequest request) throws DataAccessException {
         // Logic to create a new game
 //        check auth token

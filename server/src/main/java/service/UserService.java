@@ -1,10 +1,10 @@
 package service;
 
+import dataAccess.sqlDao.AuthSqlDao;
+import dataAccess.sqlDao.UserSqlDao;
 import model.AuthData;
-import dataAccess.AuthDao;
 import dataAccess.DataAccessException;
 import model.UserData;
-import dataAccess.UserDao;
 import request.LoginRequest;
 import request.RegisterRequest;
 import response.LoginResponse;
@@ -12,8 +12,8 @@ import response.LoginResponse;
 
 
 public class UserService {
-    private static final AuthDao authDAO = new AuthDao();
-    private static final UserDao userDAO = new UserDao();
+    private static final AuthSqlDao authDAO = new AuthSqlDao();
+    private static final UserSqlDao userDAO = new UserSqlDao();
 
     public LoginResponse register(RegisterRequest request) throws DataAccessException {
         if(userDAO.containsUser(request.username())){

@@ -1,4 +1,4 @@
-package dataAccess;
+package dataAccess.memoryDao;
 
 //createGame: Create a new game.
 //getGame: Retrieve a specified game with the given game ID.
@@ -7,17 +7,19 @@ package dataAccess;
 //            This is used when players join a game or when a move is made.
 
 import chess.ChessGame;
+import dataAccess.DataAccessException;
+import dataAccess.GameDaoInterface;
 import model.GameData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GameDao {
+public class GameDao implements GameDaoInterface {
     public static final Map<Integer, GameData> storage = new HashMap<>();
 
 
-    public void addGame(GameData game) throws DataAccessException{
+    public void addGame(GameData game) throws DataAccessException {
         for (GameData gameData : storage.values()) {
             if (game.getGameName().equals(gameData.getGameName())) {
                 throw new DataAccessException("Game with name " + gameData.getGameName() + " already exists");
