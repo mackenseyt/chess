@@ -23,7 +23,14 @@ public class AuthDaoTests {
 
     @Test
     void testClear(){
+//        put an auth token and username in
         AuthData auth = new AuthData("testuser","testToken" );
+        Assertions.assertDoesNotThrow(()-> authDao.addAuth(auth));
+
+//        check if its there
+        AuthData foundToken = Assertions.assertDoesNotThrow(()-> authDao.getAuth("testToken"));
+        Assertions.assertEquals(auth, foundToken);
+
     }
 //    private AuthSqlDao getDataAccess(Class<? extends dataAccess> databaseClass) throws DataAccessException {
 //        AuthSqlDao db = new AuthSqlDao();

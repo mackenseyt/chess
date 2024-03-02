@@ -7,6 +7,7 @@ import java.util.UUID;
 public class AuthData {
     private String authToken;
     private String username;
+    private Integer id;
 
     public AuthData(){}
 
@@ -17,6 +18,11 @@ public class AuthData {
     public AuthData(String username, String authToken){
         this.authToken = authToken;
         this.username = username;
+    }
+    public AuthData(Integer id, String username, String authToken){
+        this.authToken = authToken;
+        this.username = username;
+        this.id = id;
     }
 
     private String generateAuthToken() {

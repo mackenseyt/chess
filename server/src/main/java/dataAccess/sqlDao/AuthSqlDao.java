@@ -1,5 +1,6 @@
 package dataAccess.sqlDao;
 
+import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import model.AuthData;
 import dataAccess.DatabaseManager;
@@ -29,7 +30,6 @@ public class AuthSqlDao{
                 if (rs.next()) {
                     return rs.getInt(1);
                 }
-
                 return 0;
             }
         } catch (SQLException e) {
@@ -38,12 +38,31 @@ public class AuthSqlDao{
     }
     private final String[] createStatement = {
         """
+        CREATE TABLE IF NOT EXISTS user (
+            username VARCHAR(255) NOT NULL,
+            password VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
+            PRIMARY KEY (username)
+        )""",
+        """
         CREATE TABLE IF NOT EXISTS auth (
              authToken VARCHAR(255) NOT NULL,
              username VARCHAR(255) NOT NULL,
              PRIMARY KEY (authToken),
              FOREIGN KEY (username) REFERENCES user(username)
-         )"""
+         )""",
+        """
+        CREATE TABLE IF NOT EXISTS game (
+             gameID INT NOT NULL,
+             whiteUsername VARCHAR(255),
+             blackUsername VARCHAR(255),
+             gameName VARCHAR(255) NOT NULL,
+             game LONGTEXT NOT NULL,
+             PRIMARY KEY (gameID),
+             FOREIGN KEY (whiteUsername) REFERENCES user(username),
+             FOREIGN KEY (blackUsername) REFERENCES user(username)
+         )
+         """
     };
 
     private void configureDatabase() throws DataAccessException{
@@ -60,15 +79,33 @@ public class AuthSqlDao{
         }
     }
 
-    public void addAuth(AuthData authToken) {
-
+    public void addAuth(AuthData authToken) throws DataAccessException {
+        try {
+            var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
+            executeUpdate(statement, authToken.getAuthToken(), authToken.getUsername());
+        }catch(DataAccessException e){
+            throw  new DataAccessException(e.toString());
+        }
     }
 
     public boolean containsAuth(String token) {
         return false;
     }
 
-    public AuthData getAuth(String token) {
+    public AuthData getAuth(String token)throws DataAccessException {
+        try (var conn = db.getConnection()) {
+            var statement = "SELECT * FROM auth WHERE authToken = ?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, token);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return new AuthData(rs.getString("username"), rs.getString("authToken"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.toString());
+        }
         return null;
     }
 
