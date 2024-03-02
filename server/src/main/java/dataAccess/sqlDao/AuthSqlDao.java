@@ -88,10 +88,6 @@ public class AuthSqlDao{
         }
     }
 
-    public boolean containsAuth(String token) {
-        return false;
-    }
-
     public AuthData getAuth(String token)throws DataAccessException {
         try (var conn = db.getConnection()) {
             var statement = "SELECT * FROM auth WHERE authToken = ?";
@@ -109,8 +105,9 @@ public class AuthSqlDao{
         return null;
     }
 
-    public void deleteAuth(String token) {
-
+    public void deleteAuth(String token) throws DataAccessException{
+        var statement = "DELETE FROM auth WHERE authToken=?";
+        executeUpdate(statement, token);
     }
 
     public void clear()throws DataAccessException {

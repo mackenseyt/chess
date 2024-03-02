@@ -36,9 +36,8 @@ public class UserService {
     }
 
     public LoginResponse login(LoginRequest request) throws  DataAccessException{
-        Boolean user = userDao.containsUser(request.username());
         UserData userObj = userDao.getUser(request.username());
-        if(!user || !userObj.getPassword().equals(request.password())){
+        if(userObj == null || !userObj.getPassword().equals(request.password())){
             throw new DataAccessException("Username or password is incorrect");
         }
         var authToken = new AuthData(request.username());
@@ -52,7 +51,7 @@ public class UserService {
     }
 
     public void authoriseUser(String authToken) throws DataAccessException{
-        if(!authDao.containsAuth(authToken)){
+        if(authDao.getAuth(authToken) == null){
             throw new DataAccessException("unauthorized");
         }
     }
