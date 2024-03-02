@@ -34,7 +34,7 @@ public class DatabaseManager {
     /**
      * Creates the database if it does not already exist.
      */
-    public static void createDatabase() throws DataAccessException {
+    synchronized public void createDatabase() throws DataAccessException {
         try {
             var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
             var conn = DriverManager.getConnection(connectionUrl, user, password);
@@ -58,7 +58,7 @@ public class DatabaseManager {
      * }
      * </code>
      */
-    public static Connection getConnection() throws DataAccessException {
+    synchronized public Connection getConnection() throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(connectionUrl, user, password);
             conn.setCatalog(databaseName);

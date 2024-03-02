@@ -8,14 +8,13 @@ package dataAccess.memoryDao;
 
 import chess.ChessGame;
 import dataAccess.DataAccessException;
-import dataAccess.GameDaoInterface;
 import model.GameData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GameDao implements GameDaoInterface {
+public class GameDao{
     public static final Map<Integer, GameData> storage = new HashMap<>();
 
 

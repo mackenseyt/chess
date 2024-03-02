@@ -12,37 +12,47 @@ import response.LoginResponse;
 
 
 public class UserService {
-    private static final AuthSqlDao authDAO = new AuthSqlDao();
-    private static final UserSqlDao userDAO = new UserSqlDao();
+    private static final AuthSqlDao authDao;
+    private static final UserSqlDao userDao;
+
+    static {
+        try {
+            authDao = new AuthSqlDao();
+            userDao = new UserSqlDao();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public LoginResponse register(RegisterRequest request) throws DataAccessException {
-        if(userDAO.containsUser(request.username())){
+        if(userDao.containsUser(request.username())){
             throw new DataAccessException("Name in use");
         }
-        userDAO.registerUser(request.username(), request.password(), request.email());
+        userDao.registerUser(request.username(), request.password(), request.email());
         var authToken = new AuthData(request.username());
-        authDAO.addAuth(authToken);
+        authDao.addAuth(authToken);
         return new LoginResponse(request.username(), authToken.getAuthToken());
     }
 
     public LoginResponse login(LoginRequest request) throws  DataAccessException{
-        Boolean user = userDAO.containsUser(request.username());
-        UserData userObj = userDAO.getUser(request.username());
+        Boolean user = userDao.containsUser(request.username());
+        UserData userObj = userDao.getUser(request.username());
         if(!user || !userObj.getPassword().equals(request.password())){
             throw new DataAccessException("Username or password is incorrect");
         }
         var authToken = new AuthData(request.username());
-        authDAO.addAuth(authToken);
+        authDao.addAuth(authToken);
         return new LoginResponse(authToken.getUsername(), authToken.getAuthToken());
 
     }
 
     public void logout(String authToken)throws DataAccessException{
-        authDAO.deleteAuth(authToken);
+        authDao.deleteAuth(authToken);
     }
 
     public void authoriseUser(String authToken) throws DataAccessException{
-        if(!authDAO.containsAuth(authToken)){
+        if(!authDao.containsAuth(authToken)){
             throw new DataAccessException("unauthorized");
         }
     }

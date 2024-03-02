@@ -11,8 +11,17 @@ import response.ListGameResponse;
 import java.util.ArrayList;
 
 public class GameService {
-    private final AuthSqlDao authDAO = new AuthSqlDao();
-    private final GameSqlDao gameDao = new GameSqlDao();
+    private static final AuthSqlDao authDao;
+    private static final GameSqlDao gameDao;
+    static {
+        try {
+            authDao = new AuthSqlDao();
+            gameDao = new GameSqlDao();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public CreateGameResponse createGame(CreateGameRequest request) throws DataAccessException {
         // Logic to create a new game
 //        check auth token
@@ -28,7 +37,7 @@ public class GameService {
         if(game == null){
             throw new DataAccessException("Game not found");
         }
-        var username = authDAO.getAuth(request.authToken()).getUsername();
+        var username = authDao.getAuth(request.authToken()).getUsername();
         gameDao.claimGame(username, request.playerColor(), request.gameID());
     }
     public ListGameResponse listGames() throws DataAccessException {
