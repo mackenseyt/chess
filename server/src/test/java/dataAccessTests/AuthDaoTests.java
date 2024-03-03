@@ -1,5 +1,6 @@
-package passoffTests.serverTests.daoTests;
+package dataAccessTests;
 
+import dataAccess.DataAccessException;
 import dataAccess.sqlDao.AuthSqlDao;
 import model.AuthData;
 import org.junit.jupiter.api.Assertions;
@@ -42,6 +43,18 @@ public class AuthDaoTests {
         AuthData foundToken = Assertions.assertDoesNotThrow(()-> authDao.getAuth("testToken"));
         Assertions.assertEquals(auth, foundToken);
     }
+    @Test
+    void addAuthFailTokenExists() {
+        // Add an authentication token initially
+        AuthData auth = new AuthData("existingUser", "existingToken");
+        Assertions.assertDoesNotThrow(() -> authDao.addAuth(auth));
+
+        // Attempt to add the same authentication token again
+        AuthData duplicateAuth = new AuthData("anotherUser", "existingToken");
+
+        // Verify that adding the duplicate token throws a DataAccessException
+        Assertions.assertThrows(DataAccessException.class,() -> authDao.addAuth(duplicateAuth));
+    }
 
     @Test
     void getAuth(){
@@ -57,6 +70,14 @@ public class AuthDaoTests {
         Assertions.assertEquals(auth.getUsername(), retrievedAuth.getUsername());
         Assertions.assertEquals(auth.getAuthToken(), retrievedAuth.getAuthToken());
     }
+    @Test
+    void getAuthFailNotFound() {
+        // Attempt to retrieve authentication data for a non-existent token
+        String nonExistentToken = "nonExistentToken";
+
+        // Verify that attempting to get authentication data for the non-existent token throws a DataAccessException
+        Assertions.assertThrows(DataAccessException.class, () -> authDao.getAuth(nonExistentToken));
+    }
 
     @Test
     void deleteAuth(){
@@ -66,6 +87,16 @@ public class AuthDaoTests {
         Assertions.assertDoesNotThrow(() -> {
             authDao.deleteAuth("testToken");
             Assertions.assertNull(authDao.getAuth("testToken"));
+        });
+    }
+    @Test
+    void deleteAuthFail() {
+        AuthData auth = new AuthData("testuser", "testToken");
+        Assertions.assertDoesNotThrow(() -> authDao.addAuth(auth));
+
+        // Attempt to delete an authentication token that doesn't exist
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            authDao.deleteAuth("nonExistentToken");
         });
     }
 

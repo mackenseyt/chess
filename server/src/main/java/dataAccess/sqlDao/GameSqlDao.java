@@ -18,7 +18,7 @@ public class GameSqlDao{
     private final DatabaseManager db = new DatabaseManager();
 
     public GameSqlDao() throws DataAccessException{
-        configureDatabase();
+        db.configureDatabase();
     }
 
     public void addGame(GameData game) throws DataAccessException {
@@ -64,6 +64,13 @@ public class GameSqlDao{
         return null; // Return null if no game with the specified ID is found
     }
 
+    public void clear() throws DataAccessException{
+        var statement = "DELETE FROM game";
+        db.executeUpdate(statement);
+    }
+    private ChessGame deserializeChessGame(String gameData) {
+        return new Gson().fromJson(gameData, ChessGame.class);
+    }
 
     public ArrayList<GameData> listGames() throws DataAccessException {
         ArrayList<GameData> games = new ArrayList<>();
@@ -91,61 +98,32 @@ public class GameSqlDao{
 
 
     public void claimGame(String username, ChessGame.TeamColor teamColor, int id) throws DataAccessException {
+        GameData game = getGame(id);
+        if (teamColor == null) {
+            return; // User can only watch
+        }
+        switch (teamColor) {
+            case WHITE:
+                if (game.getWhiteUsername() == null) {
+                    game.setWhiteUsername(username);
+                } else {
+                    throw new DataAccessException("White side is already taken");
+                }
+                break;
+            case BLACK:
+                if (game.getBlackUsername() == null) {
+                    game.setBlackUsername(username);
+                } else {
+                    throw new DataAccessException("Black side is already taken");
+                }
+                break;
+        }
+        db.executeUpdate("UPDATE game SET whiteUsername = ?, blackUsername = ?, game = ? WHERE gameID = ?",
+                game.getWhiteUsername(), game.getBlackUsername(), new Gson().toJson(game), game.getGameID());
 
     }
-    private final String[] createStatement = {
-            """
-        CREATE TABLE IF NOT EXISTS game (
-             gameID INT NOT NULL,
-             whiteUsername VARCHAR(255),
-             blackUsername VARCHAR(255),
-             gameName VARCHAR(255) NOT NULL,
-             game LONGTEXT NOT NULL,
-             PRIMARY KEY (gameID),
-             FOREIGN KEY (whiteUsername) REFERENCES user(username),
-             FOREIGN KEY (blackUsername) REFERENCES user(username)
-         )
-         """
-    };
-    private void configureDatabase() throws DataAccessException{
-        db.createDatabase();
-        try(var conn = db.getConnection()){
-            for(var state: createStatement){
-                try(var preparedStatement = conn.prepareStatement(state)){
-                    preparedStatement.executeUpdate();
-                }
-            }
-        }
-        catch(SQLException e){
-            throw new DataAccessException(String.format("Unable to configure database: %s", e.getMessage()));
-        }
-    }
-    private int executeUpdate(String statement, Object... params)throws DataAccessException{
-        try (var conn = db.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-                return 0;
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", e.getMessage()));
-        }
-    }
-    public void clear() throws DataAccessException{
-        var statement = "DELETE FROM game";
-        executeUpdate(statement);
-    }
-    private ChessGame deserializeChessGame(String gameData) {
-        return new Gson().fromJson(gameData, ChessGame.class);
-    }
+
+
 
 
 }

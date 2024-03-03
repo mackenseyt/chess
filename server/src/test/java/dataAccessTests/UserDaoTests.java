@@ -1,6 +1,7 @@
-package passoffTests.serverTests.daoTests;
+package dataAccessTests;
 
 import dataAccess.sqlDao.AuthSqlDao;
+import dataAccess.sqlDao.GameSqlDao;
 import dataAccess.sqlDao.UserSqlDao;
 import model.AuthData;
 import model.UserData;
@@ -10,15 +11,18 @@ import org.junit.jupiter.api.Test;
 
 public class UserDaoTests {
     private static final UserSqlDao userDao;
+    private static final GameSqlDao gameDao;
     static {
         try {
             userDao = new UserSqlDao();
+            gameDao = new GameSqlDao();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
     @BeforeEach
     void setup() {
+        Assertions.assertDoesNotThrow(gameDao::clear);
         Assertions.assertDoesNotThrow(userDao::clear);
     }
     @Test

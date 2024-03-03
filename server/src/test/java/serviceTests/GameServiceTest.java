@@ -1,4 +1,4 @@
-package passoffTests.serverTests.serviceTests;
+package serviceTests;
 
 import chess.ChessGame;
 import dataAccess.memoryDao.AuthDao;

@@ -1,4 +1,4 @@
-package passoffTests.serverTests.serviceTests;
+package serviceTests;
 
 import dataAccess.DataAccessException;
 import dataAccess.memoryDao.AuthDao;
