@@ -118,12 +118,15 @@ public class GameSqlDao{
                 }
                 break;
         }
-        db.executeUpdate("UPDATE game SET whiteUsername = ?, blackUsername = ?, game = ? WHERE gameID = ?",
-                game.getWhiteUsername(), game.getBlackUsername(), new Gson().toJson(game), game.getGameID());
+//         Update the specific columns in the database
+
+//        these two lines of code make everything else break but I cant figure out why
+//        var statement = "UPDATE game SET whiteUsername = ?, blackUsername = ? WHERE gameID = ?";
+//        db.executeUpdate(statement, game.getWhiteUsername(), game.getBlackUsername(), id);
+
+//        db.executeUpdate("UPDATE game SET whiteUsername = ?, blackUsername = ?, game = ? WHERE gameID = ?",
+//                game.getWhiteUsername(), game.getBlackUsername(), new Gson().toJson(game), game.getGameID());
 
     }
-
-
-
 
 }

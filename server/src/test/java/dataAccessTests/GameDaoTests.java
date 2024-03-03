@@ -1,6 +1,7 @@
 package dataAccessTests;
 
 import chess.ChessGame;
+import dataAccess.DataAccessException;
 import dataAccess.sqlDao.GameSqlDao;
 import dataAccess.sqlDao.UserSqlDao;
 import model.GameData;
@@ -37,6 +38,16 @@ public class GameDaoTests {
         GameData foundGame = Assertions.assertDoesNotThrow(()-> gameDao.getGame(1));
         Assertions.assertEquals(testGame, foundGame);
     }
+    @Test
+    void addGameFail() {
+        // Attempt to add a game with an existing gameID
+        GameData existingGame = new GameData(1, null, null, "existingGameName", new ChessGame());
+        Assertions.assertDoesNotThrow(() -> gameDao.addGame(existingGame));
+
+        // Attempt to add a game with the same gameID as an existing game
+        GameData duplicateGame = new GameData(1, null, null, "duplicateGameName", new ChessGame());
+        Assertions.assertThrows(DataAccessException.class, () -> gameDao.addGame(duplicateGame));
+    }
 
     @Test
     void getGame(){
@@ -49,6 +60,11 @@ public class GameDaoTests {
         Assertions.assertEquals(testGame.getGameID(), foundGame.getGameID());
         Assertions.assertEquals(testGame.getGameName(), foundGame.getGameName());
         Assertions.assertEquals(testGame.getGame(), foundGame.getGame());
+    }
+    @Test
+    void getGameFail() {
+        // Attempt to get a non-existing game
+        Assertions.assertThrows(DataAccessException.class, () -> gameDao.getGame(-1));
     }
 
     @Test
@@ -76,6 +92,14 @@ public class GameDaoTests {
     }
 
     @Test
+    void listGamesFail() {
+//        so techically just testing that it still works even when there are no games
+        // test that the result list is empty when there are no Games
+        Assertions.assertTrue(Assertions.assertDoesNotThrow(gameDao::listGames).isEmpty());
+    }
+
+
+    @Test
     void claimGame(){
         GameData testGame = new GameData("testGame");
         Assertions.assertDoesNotThrow(() -> gameDao.addGame(testGame));
@@ -89,4 +113,10 @@ public class GameDaoTests {
         var foundUsername = Assertions.assertDoesNotThrow(() -> gameDao.getGame(testGame.getGameID()).getWhiteUsername());
         Assertions.assertEquals(foundUsername, testUser.getUsername());
     }
+    @Test
+    void claimGameFail() {
+        // Attempt to claim a non-existing game
+        Assertions.assertThrows(DataAccessException.class, () -> gameDao.claimGame("NonExistingUser", ChessGame.TeamColor.WHITE, -1));
+    }
+
 }

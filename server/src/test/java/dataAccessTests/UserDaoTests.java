@@ -1,5 +1,6 @@
 package dataAccessTests;
 
+import dataAccess.DataAccessException;
 import dataAccess.sqlDao.AuthSqlDao;
 import dataAccess.sqlDao.GameSqlDao;
 import dataAccess.sqlDao.UserSqlDao;
@@ -46,6 +47,15 @@ public class UserDaoTests {
         Assertions.assertEquals(user, foundUser);
 
     }
+    @Test
+    void registerUserFail() {
+        // Attempt to register a user with existing username
+        Assertions.assertThrows(DataAccessException.class, () -> userDao.registerUser("existingUser", "testPass", "testEmail"));
+
+        // Attempt to register a user with invalid input (e.g., null username)
+        Assertions.assertThrows(DataAccessException.class, () -> userDao.registerUser(null, "testPass", "testEmail"));
+    }
+
 
     @Test
     void getUser(){
@@ -60,4 +70,10 @@ public class UserDaoTests {
         Assertions.assertEquals(user.getPassword(), retrievedUser.getPassword());
         Assertions.assertEquals(user.getEmail(), retrievedUser.getEmail());
     }
+    @Test
+    void getUserFail() {
+        // Attempt to retrieve a non-existing user
+        Assertions.assertThrows(DataAccessException.class, () -> userDao.getUser("nonExistingUser"));
+    }
+
 }
