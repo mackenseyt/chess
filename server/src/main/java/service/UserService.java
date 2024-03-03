@@ -26,7 +26,7 @@ public class UserService {
 
 
     public LoginResponse register(RegisterRequest request) throws DataAccessException {
-        if(userDao.containsUser(request.username())){
+        if(userDao.getUser(request.username())!= null){
             throw new DataAccessException("Name in use");
         }
         userDao.registerUser(request.username(), request.password(), request.email());

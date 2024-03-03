@@ -42,4 +42,18 @@ public class UserDaoTests {
         Assertions.assertEquals(user, foundUser);
 
     }
+
+    @Test
+    void getUser(){
+        UserData user = new UserData("testUser", "testPass", "testEmail");
+        Assertions.assertDoesNotThrow(()-> userDao.registerUser("testUser", "testPass", "testEmail"));
+
+        UserData retrievedUser= Assertions.assertDoesNotThrow(() -> userDao.getUser("testUser"));
+
+        // Assert that the retrieved AuthData object matches the one added to the database
+        Assertions.assertNotNull(retrievedUser);
+        Assertions.assertEquals(user.getUsername(), retrievedUser.getUsername());
+        Assertions.assertEquals(user.getPassword(), retrievedUser.getPassword());
+        Assertions.assertEquals(user.getEmail(), retrievedUser.getEmail());
+    }
 }

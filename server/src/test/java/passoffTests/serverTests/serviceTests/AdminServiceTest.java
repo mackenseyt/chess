@@ -1,8 +1,12 @@
 package passoffTests.serverTests.serviceTests;
 
+import dataAccess.DataAccessException;
 import dataAccess.memoryDao.AuthDao;
 import dataAccess.memoryDao.GameDao;
 import dataAccess.memoryDao.UserDao;
+import dataAccess.sqlDao.AuthSqlDao;
+import dataAccess.sqlDao.GameSqlDao;
+import dataAccess.sqlDao.UserSqlDao;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -14,9 +18,19 @@ import service.ApplicationService;
 
 class AdminServiceTest {
 
-    private static final UserDao userDao = new UserDao();
-    private static final AuthDao authTokenDao = new AuthDao();
-    private static final GameDao gameDao = new GameDao();
+    static final GameSqlDao gameDao;
+    static final UserSqlDao userDao;
+    static final AuthSqlDao authTokenDao;
+
+    static {
+        try {
+            gameDao = new GameSqlDao();
+            userDao = new UserSqlDao();
+            authTokenDao = new AuthSqlDao();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
     private static final ApplicationService testAdmin = new ApplicationService();
 
     @BeforeEach
@@ -24,14 +38,14 @@ class AdminServiceTest {
         Assertions.assertDoesNotThrow(gameDao::clear);
         Assertions.assertDoesNotThrow(userDao::clear);
         Assertions.assertDoesNotThrow(authTokenDao::clear);
-        Assertions.assertTrue(userDao.userStorage.isEmpty());
-        Assertions.assertTrue(authTokenDao.storage.isEmpty());
-        Assertions.assertTrue(gameDao.storage.isEmpty());
+//        Assertions.assertTrue(userDao.userStorage.isEmpty());
+//        Assertions.assertTrue(authTokenDao.storage.isEmpty());
+//        Assertions.assertTrue(gameDao.storage.isEmpty());
     }
 
     @Test
     @DisplayName("Clear Test")
-    public void clearDatabase() {
+    public void clearDatabase() throws DataAccessException {
 
         // add some data to the database
         UserData testUser = new UserData("testUser", "password", "test@test.com");
@@ -42,16 +56,16 @@ class AdminServiceTest {
         Assertions.assertDoesNotThrow(() -> gameDao.addGame(testGame));
 
         // check the database is not empty
-        Assertions.assertFalse(userDao.userStorage.isEmpty());
-        Assertions.assertFalse(authTokenDao.storage.isEmpty());
-        Assertions.assertFalse(gameDao.storage.isEmpty());
+        Assertions.assertNotNull(userDao.getUser("testUser"));
+        Assertions.assertNotNull(authTokenDao.getAuth(testToken.getAuthToken()));
+        Assertions.assertNotNull(gameDao.getGame(testGame.getGameID()));
 
         Assertions.assertDoesNotThrow(testAdmin::clearAllData);
 
         // check that the database is clear
-        Assertions.assertTrue(userDao.userStorage.isEmpty());
-        Assertions.assertTrue(authTokenDao.storage.isEmpty());
-        Assertions.assertTrue(gameDao.storage.isEmpty());
+        Assertions.assertNull(userDao.getUser("testUser"));
+        Assertions.assertNull(authTokenDao.getAuth(testToken.getAuthToken()));
+        Assertions.assertNull(gameDao.getGame(testGame.getGameID()));
     }
 }
 

@@ -1,9 +1,9 @@
 package passoffTests.serverTests.serviceTests;
 
-import dataAccess.memoryDao.AuthDao;
 import dataAccess.DataAccessException;
-import dataAccess.memoryDao.GameDao;
-import dataAccess.memoryDao.UserDao;
+import dataAccess.sqlDao.AuthSqlDao;
+import dataAccess.sqlDao.GameSqlDao;
+import dataAccess.sqlDao.UserSqlDao;
 import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
@@ -16,9 +16,19 @@ import response.LoginResponse;
 import service.UserService;
 
 public class UserServiceTest {
-    static final GameDao gameDao = new GameDao();
-    static final UserDao userDao = new UserDao();
-    static final AuthDao authDao = new AuthDao();
+    static final GameSqlDao gameDao;
+    static final UserSqlDao userDao;
+    static final AuthSqlDao authDao;
+
+    static {
+        try {
+            gameDao = new GameSqlDao();
+            userDao = new UserSqlDao();
+            authDao = new AuthSqlDao();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
     static final UserService service = new UserService();
     static final UserData testUser = new UserData("testUser", "testPassword", "test@test.com");
     @BeforeEach
@@ -27,9 +37,9 @@ public class UserServiceTest {
         Assertions.assertDoesNotThrow(userDao::clear);
         Assertions.assertDoesNotThrow(authDao::clear);
 
-        Assertions.assertTrue(userDao.userStorage.isEmpty());
-        Assertions.assertTrue(authDao.storage.isEmpty());
-        Assertions.assertTrue(gameDao.storage.isEmpty());
+//        Assertions.assertTrue(userDao.userStorage.isEmpty());
+//        Assertions.assertTrue(authDao.storage.isEmpty());
+//        Assertions.assertTrue(gameDao.storage.isEmpty());
     }
 
     @Test

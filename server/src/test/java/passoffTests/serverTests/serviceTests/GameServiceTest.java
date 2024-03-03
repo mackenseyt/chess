@@ -5,6 +5,9 @@ import dataAccess.memoryDao.AuthDao;
 import dataAccess.DataAccessException;
 import dataAccess.memoryDao.GameDao;
 import dataAccess.memoryDao.UserDao;
+import dataAccess.sqlDao.AuthSqlDao;
+import dataAccess.sqlDao.GameSqlDao;
+import dataAccess.sqlDao.UserSqlDao;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -21,9 +24,21 @@ import service.GameService;
 
 public class GameServiceTest {
 
-    static final GameDao gameDao = new GameDao();
-    static final UserDao userDao = new UserDao();
-    static final AuthDao authTokenDao = new AuthDao();
+    static final GameSqlDao gameDao;
+    static final UserSqlDao userDao;
+    static final AuthSqlDao authTokenDao;
+
+    static {
+        try {
+            gameDao = new GameSqlDao();
+            userDao = new UserSqlDao();
+            authTokenDao = new AuthSqlDao();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     static final UserData testUser = new UserData("testUser", "testPassword", "test@test.com");
     static final AuthData testAuth = new AuthData(testUser.getUsername());
     static final GameService service = new GameService();
@@ -35,9 +50,9 @@ public class GameServiceTest {
         Assertions.assertDoesNotThrow(userDao::clear);
         Assertions.assertDoesNotThrow(authTokenDao::clear);
 
-        Assertions.assertTrue(userDao.userStorage.isEmpty());
-        Assertions.assertTrue(authTokenDao.storage.isEmpty());
-        Assertions.assertTrue(gameDao.storage.isEmpty());
+//        Assertions.assertTrue(userDao.userStorage.isEmpty());
+//        Assertions.assertTrue(authTokenDao.storage.isEmpty());
+//        Assertions.assertTrue(gameDao.storage.isEmpty());
 
         Assertions.assertDoesNotThrow(()-> userDao.registerUser("testUser", "testPassword", "test@test.com"));
 

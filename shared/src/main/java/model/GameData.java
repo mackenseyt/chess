@@ -17,7 +17,13 @@ public class GameData {
         this.gameID = nextGameID++;
         this.gameName = gameName;
         this.game = new ChessGame();
-        
+    }
+    public GameData(int gameid, String whiteUsername, String blackUsername, String gameName, ChessGame game){
+        this.gameID = gameid;
+        this.whiteUsername = whiteUsername;
+        this.blackUsername = blackUsername;
+        this.gameName = gameName;
+        this.game = new ChessGame();
     }
 
     public int getGameID() {
