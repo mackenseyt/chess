@@ -16,12 +16,11 @@ import java.util.ArrayList;
 public class GameDaoTests {
     private static final GameSqlDao gameDao;
     private static final UserSqlDao userDao;
-    private static final AuthSqlDao authDao;
     static {
         try {
             gameDao = new GameSqlDao();
             userDao = new UserSqlDao();
-            authDao = new AuthSqlDao();
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -30,6 +29,7 @@ public class GameDaoTests {
     @BeforeEach
     void setup() {
         Assertions.assertDoesNotThrow(gameDao::clear);
+        Assertions.assertDoesNotThrow(userDao::clear);
     }
 
 

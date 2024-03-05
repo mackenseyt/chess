@@ -50,7 +50,7 @@ public class UserServiceTest {
 
         Assertions.assertEquals(testUser.getUsername(), loginResponse.username());
         Assertions.assertEquals(testUser.getUsername(), Assertions.assertDoesNotThrow(()-> authDao.getAuth(loginResponse.authToken()).getUsername()));
-        Assertions.assertEquals(testUser, Assertions.assertDoesNotThrow(()-> userDao.getUser(testUser.getUsername())));
+        Assertions.assertEquals(testUser.getUsername(), Assertions.assertDoesNotThrow(()-> userDao.getUser(testUser.getUsername()).getUsername()));
 
     }
 

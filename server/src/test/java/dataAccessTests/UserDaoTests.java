@@ -9,6 +9,7 @@ import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class UserDaoTests {
     private static final UserSqlDao userDao;
@@ -44,7 +45,7 @@ public class UserDaoTests {
 
 //        check if its there
         UserData foundUser = Assertions.assertDoesNotThrow(()-> userDao.getUser("testUser"));
-        Assertions.assertEquals(user, foundUser);
+        Assertions.assertEquals(user.getUsername(), foundUser.getUsername());
 
     }
     @Test
@@ -60,15 +61,17 @@ public class UserDaoTests {
 
     @Test
     void getUser(){
+
         UserData user = new UserData("testUser", "testPass", "testEmail");
         Assertions.assertDoesNotThrow(()-> userDao.registerUser("testUser", "testPass", "testEmail"));
 
         UserData retrievedUser= Assertions.assertDoesNotThrow(() -> userDao.getUser("testUser"));
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         // Assert that the retrieved AuthData object matches the one added to the database
         Assertions.assertNotNull(retrievedUser);
         Assertions.assertEquals(user.getUsername(), retrievedUser.getUsername());
-        Assertions.assertEquals(user.getPassword(), retrievedUser.getPassword());
+        Assertions.assertTrue(encoder.matches(user.getPassword(), retrievedUser.getPassword()));
         Assertions.assertEquals(user.getEmail(), retrievedUser.getEmail());
     }
     @Test

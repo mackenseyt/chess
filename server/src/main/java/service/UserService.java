@@ -36,8 +36,8 @@ public class UserService {
     }
 
     public LoginResponse login(LoginRequest request) throws  DataAccessException{
-//        UserData userObj = userDao.loginUser(request.username(), request.password());
-        UserData userObj = userDao.getUser(request.username());
+        UserData userObj = userDao.loginUser(request.username(), request.password());
+//        UserData userObj = userDao.getUser(request.username());
         if(userObj == null || !userObj.getPassword().equals(request.password())){
             throw new DataAccessException("Username or password is incorrect");
         }

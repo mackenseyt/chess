@@ -19,12 +19,12 @@ public class UserSqlDao{
     }
 
     public void registerUser(String username, String password, String email) throws DataAccessException{
-//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-//        String hashedPassword = encoder.encode(password);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String hashedPassword = encoder.encode(password);
         var conn = db.getConnection();
         try {
             var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
-            db.executeUpdate(conn, statement, username, password, email);
+            db.executeUpdate(conn, statement, username, hashedPassword, email);
         }catch(DataAccessException e){
             throw  new DataAccessException(e.toString());
         }finally {
