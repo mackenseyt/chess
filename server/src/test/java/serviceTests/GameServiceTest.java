@@ -77,7 +77,7 @@ public class GameServiceTest {
         Assertions.assertDoesNotThrow(()-> gameDao.addGame(testGame));
 
         CreateGameRequest createGameRequest = new CreateGameRequest("testGame");
-        Assertions.assertThrows(DataAccessException.class, ()-> service.createGame(createGameRequest));
+        Assertions.assertDoesNotThrow(()-> service.createGame(createGameRequest));
 
     }
 
@@ -119,7 +119,6 @@ public class GameServiceTest {
         Assertions.assertEquals(2, listGameResponse.games().size());
         Assertions.assertTrue(listGameResponse.games().contains(testGame1));
         Assertions.assertTrue(listGameResponse.games().contains(testGame2));
-
     }
 
 

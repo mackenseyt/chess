@@ -22,23 +22,20 @@ public class GameSqlDao{
     }
 
     public void addGame(GameData game) throws DataAccessException {
-        try (var conn = db.getConnection()) {
+        var conn = db.getConnection();
+        try{
             var statement = "INSERT INTO game (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
-            try (var ps = conn.prepareStatement(statement)) {
-                ps.setInt(1, game.getGameID());
-                ps.setString(2, game.getWhiteUsername());
-                ps.setString(3, game.getBlackUsername());
-                ps.setString(4, game.getGameName());
-                ps.setString(5, new Gson().toJson(game.getGame())); // Serialize ChessGame object to JSON
-                ps.executeUpdate();
-            }
-        } catch (SQLException e) {
+            db.executeUpdate(conn, statement, game.getGameID(), game.getWhiteUsername(), game.getBlackUsername(), game.getGameName(), new Gson().toJson(game.getGame()));
+        } catch (DataAccessException e) {
             throw new DataAccessException(e.getMessage());
+        }finally{
+            db.closeConnection(conn);
         }
     }
 
     public GameData getGame(Integer id) throws DataAccessException {
-        try (var conn = db.getConnection()) {
+        var conn = db.getConnection();
+        try {
             var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM game WHERE gameID = ?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, id);
@@ -60,21 +57,26 @@ public class GameSqlDao{
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
+        }finally{
+            db.closeConnection(conn);
         }
         return null; // Return null if no game with the specified ID is found
     }
 
     public void clear() throws DataAccessException{
+        var conn = db.getConnection();
         var statement = "DELETE FROM game";
-        db.executeUpdate(statement);
+        db.executeUpdate(conn, statement);
+        db.closeConnection(conn);
     }
     private ChessGame deserializeChessGame(String gameData) {
         return new Gson().fromJson(gameData, ChessGame.class);
     }
 
     public ArrayList<GameData> listGames() throws DataAccessException {
+        var conn = db.getConnection();
         ArrayList<GameData> games = new ArrayList<>();
-        try (var conn = db.getConnection()) {
+        try{
             var statement = "SELECT * FROM game";
             try (var ps = conn.prepareStatement(statement);
                  var rs = ps.executeQuery()) {
@@ -92,12 +94,15 @@ public class GameSqlDao{
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
+        }finally{
+            db.closeConnection(conn);
         }
         return games;
     }
 
 
     public void claimGame(String username, ChessGame.TeamColor teamColor, int id) throws DataAccessException {
+        var conn = db.getConnection();
         GameData game = getGame(id);
         if (teamColor == null) {
             return; // User can only watch
@@ -121,12 +126,12 @@ public class GameSqlDao{
 //         Update the specific columns in the database
 
 //        these two lines of code make everything else break but I cant figure out why
-//        var statement = "UPDATE game SET whiteUsername = ?, blackUsername = ? WHERE gameID = ?";
-//        db.executeUpdate(statement, game.getWhiteUsername(), game.getBlackUsername(), id);
+        var statement = "UPDATE game SET whiteUsername = ?, blackUsername = ? WHERE gameID = ?";
+        db.executeUpdate(conn, statement, game.getWhiteUsername(), game.getBlackUsername(), id);
 
-//        db.executeUpdate("UPDATE game SET whiteUsername = ?, blackUsername = ?, game = ? WHERE gameID = ?",
+//        db.executeUpdate(conn, "UPDATE game SET whiteUsername = ?, blackUsername = ?, game = ? WHERE gameID = ?",
 //                game.getWhiteUsername(), game.getBlackUsername(), new Gson().toJson(game), game.getGameID());
-
+        db.closeConnection(conn);
     }
 
 }

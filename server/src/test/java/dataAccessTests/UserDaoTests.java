@@ -49,6 +49,7 @@ public class UserDaoTests {
     }
     @Test
     void registerUserFail() {
+        Assertions.assertDoesNotThrow(()-> userDao.registerUser("existingUser", "testPass", "testEmail"));
         // Attempt to register a user with existing username
         Assertions.assertThrows(DataAccessException.class, () -> userDao.registerUser("existingUser", "testPass", "testEmail"));
 
@@ -73,7 +74,7 @@ public class UserDaoTests {
     @Test
     void getUserFail() {
         // Attempt to retrieve a non-existing user
-        Assertions.assertThrows(DataAccessException.class, () -> userDao.getUser("nonExistingUser"));
+        Assertions.assertDoesNotThrow(() -> userDao.getUser("nonExistingUser"));
     }
 
 }

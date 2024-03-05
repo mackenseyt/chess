@@ -18,16 +18,20 @@ public class AuthSqlDao{
     }
 
     public void addAuth(AuthData authToken) throws DataAccessException {
+        var conn = db.getConnection();
         try {
             var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
-            db.executeUpdate(statement, authToken.getAuthToken(), authToken.getUsername());
+            db.executeUpdate(conn, statement, authToken.getAuthToken(), authToken.getUsername());
         }catch(DataAccessException e){
             throw  new DataAccessException(e.toString());
+        }finally {
+            db.closeConnection(conn);
         }
     }
 
     public AuthData getAuth(String token)throws DataAccessException {
-        try (var conn = db.getConnection()) {
+        var conn = db.getConnection();
+        try {
             var statement = "SELECT * FROM auth WHERE authToken = ?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, token);
@@ -39,17 +43,23 @@ public class AuthSqlDao{
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.toString());
+        }finally {
+            db.closeConnection(conn);
         }
         return null;
     }
 
     public void deleteAuth(String token) throws DataAccessException{
+        var conn = db.getConnection();
         var statement = "DELETE FROM auth WHERE authToken=?";
-        db.executeUpdate(statement, token);
+        db.executeUpdate(conn, statement, token);
+        db.closeConnection(conn);
     }
 
     public void clear()throws DataAccessException {
+        var conn = db.getConnection();
         var statement = "TRUNCATE auth";
-        db.executeUpdate(statement);
+        db.executeUpdate(conn, statement);
+        db.closeConnection(conn);
     }
 }

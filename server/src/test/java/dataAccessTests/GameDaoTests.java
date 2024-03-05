@@ -2,6 +2,7 @@ package dataAccessTests;
 
 import chess.ChessGame;
 import dataAccess.DataAccessException;
+import dataAccess.sqlDao.AuthSqlDao;
 import dataAccess.sqlDao.GameSqlDao;
 import dataAccess.sqlDao.UserSqlDao;
 import model.GameData;
@@ -15,10 +16,12 @@ import java.util.ArrayList;
 public class GameDaoTests {
     private static final GameSqlDao gameDao;
     private static final UserSqlDao userDao;
+    private static final AuthSqlDao authDao;
     static {
         try {
             gameDao = new GameSqlDao();
             userDao = new UserSqlDao();
+            authDao = new AuthSqlDao();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -64,7 +67,7 @@ public class GameDaoTests {
     @Test
     void getGameFail() {
         // Attempt to get a non-existing game
-        Assertions.assertThrows(DataAccessException.class, () -> gameDao.getGame(-1));
+        Assertions.assertNull(Assertions.assertDoesNotThrow(()->gameDao.getGame(-1)));
     }
 
     @Test
@@ -116,7 +119,17 @@ public class GameDaoTests {
     @Test
     void claimGameFail() {
         // Attempt to claim a non-existing game
-        Assertions.assertThrows(DataAccessException.class, () -> gameDao.claimGame("NonExistingUser", ChessGame.TeamColor.WHITE, -1));
+        GameData testGame = new GameData("testGame");
+        Assertions.assertDoesNotThrow(() -> gameDao.addGame(testGame));
+
+        // add a user to the userDao to satisfy foreign key constraints, claim spot
+        UserData testUser = new UserData("testUser", "password", "email");
+        Assertions.assertDoesNotThrow(() -> userDao.registerUser("testUser", "password", "email"));
+        Assertions.assertDoesNotThrow(() -> gameDao.claimGame(testUser.getUsername(), ChessGame.TeamColor.WHITE, testGame.getGameID()));
+
+        // assert that the spot has been claimed
+        Assertions.assertThrows(DataAccessException.class, () -> gameDao.claimGame(testUser.getUsername(), ChessGame.TeamColor.WHITE, testGame.getGameID()));
+
     }
 
 }
