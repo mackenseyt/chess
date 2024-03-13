@@ -60,7 +60,7 @@ public class ServerFacade {
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();
         if (!isSuccessful(status)) {
-            throw new ResponseException(status, "failure: " + status);
+            throw new ResponseException(status, "failure: " + status + http.getResponseMessage());
         }
     }
 
@@ -81,9 +81,9 @@ public class ServerFacade {
         return status / 100 == 2;
     }
 
-    public LoginResponse register(String[] params)throws ResponseException{
+    public LoginResponse register(String username, String password, String email)throws ResponseException{
         var path = "/user";
-        var request = new RegisterRequest(params[0], params[1], params[2]);
+        var request = new RegisterRequest(username,password,email);
         return makeRequest("POST", path, request, LoginResponse.class);
     }
 
