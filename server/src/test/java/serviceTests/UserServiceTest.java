@@ -36,10 +36,7 @@ public class UserServiceTest {
         Assertions.assertDoesNotThrow(gameDao::clear);
         Assertions.assertDoesNotThrow(userDao::clear);
         Assertions.assertDoesNotThrow(authDao::clear);
-
-//        Assertions.assertTrue(userDao.userStorage.isEmpty());
-//        Assertions.assertTrue(authDao.storage.isEmpty());
-//        Assertions.assertTrue(gameDao.storage.isEmpty());
+        
     }
 
     @Test
