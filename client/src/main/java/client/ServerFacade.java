@@ -87,18 +87,18 @@ public class ServerFacade {
         return makeRequest("POST", path, request, LoginResponse.class);
     }
 
-    public LoginResponse login(String[] params) throws ResponseException{
+    public LoginResponse login(String username, String password) throws ResponseException{
         var path = "/session";
-        var request = new LoginRequest(params[0], params[1]);
+        var request = new LoginRequest(username, password);
         return makeRequest("POST", path, request, LoginResponse.class);
     }
     public void logout(String authToken) throws ResponseException{
         var path = "/session";
         makeRequest("DELETE", path, authToken, null, null);
     }
-    public CreateGameResponse createGame(String[] params, String authToken) throws ResponseException{
+    public CreateGameResponse createGame(String name, String authToken) throws ResponseException{
         var path = "/game";
-        var request = new CreateGameRequest(params[0]);
+        var request = new CreateGameRequest(name);
         return makeRequest("POST", path, authToken, request, CreateGameResponse.class);
     }
     public ListGameResponse listGames(String authToken) throws ResponseException{

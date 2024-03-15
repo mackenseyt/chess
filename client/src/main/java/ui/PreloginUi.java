@@ -12,7 +12,7 @@ import static ui.EscapeSequences.*;
 
 public class PreloginUi {
     private final PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-    private final ServerFacade server = new ServerFacade("http://localhost:8080");
+    private final ServerFacade server = new ServerFacade("http://localhost:3000");
 
     public PreloginUi() throws ResponseException {
         Scanner scanner = new Scanner(System.in);
@@ -31,7 +31,7 @@ public class PreloginUi {
                 registerUI(scanner);
             }
             else if(Objects.equals(line, "Login")|| Objects.equals(line, "login")|| Objects.equals(line, "2")){
-                loginUI();
+                loginUI(scanner);
             }
             else if(Objects.equals(line, "Quit")|| Objects.equals(line, "quit")|| Objects.equals(line, "3")){
                 exit(0);
@@ -61,18 +61,35 @@ public class PreloginUi {
             var response = server.register(username, password, email);
             if (response != null) {
                 out.println("Successfully Registered");
-                new PostLoginUi();
+                out.println();
+                String authToken = response.authToken();
+                new PostLoginUi(authToken);
             }else{
-                out.println("Failed to register. Please try again");
+                out.println("Failed to register. Please try again.");
             }
         }catch(ResponseException e){
             throw new RuntimeException(e.toString());
         }
     }
-    private void loginUI(){
-//        try{
-//
-//        }
-//        catch(ResponseException e){}
+    private void loginUI(Scanner scanner)throws ResponseException{
+        try{
+            out.print("Username:");
+            String username = scanner.nextLine();
+            out.print("Password: ");
+            String password = scanner.nextLine();
+
+            var response = server.login(username, password);
+            if(response != null){
+                out.println("Login Successful");
+                out.println();
+                String authToken = response.authToken();
+                new PostLoginUi(authToken);
+            }else{
+                out.println("Failed to login. Try again.");
+            }
+        }
+        catch(ResponseException e){
+            throw new RuntimeException(e.toString());
+        }
     }
 }

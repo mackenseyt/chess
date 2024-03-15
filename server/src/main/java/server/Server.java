@@ -22,9 +22,6 @@ public class Server {
     private final SessionHandler sessionHandler = new SessionHandler();
     private final UserHandler userHandler = new UserHandler();
 
-//    public Server(AuthDaoInterface authDaoInterface){
-//        auth = new AuthSqlDao(authDaoInterface);
-//    }
 
     public static void main(String[] args){
         try{
