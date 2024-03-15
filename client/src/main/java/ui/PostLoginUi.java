@@ -70,7 +70,8 @@ public class PostLoginUi {
             out.print("What do you want to call your game? ");
             String name = scanner.nextLine();
             server.createGame(name, authToken);
-            out.print("Your game has been created!");
+            out.println("Your game has been created!");
+            out.println();
             loggedIn(scanner);
         }
         catch(ResponseException e){
@@ -97,9 +98,10 @@ public class PostLoginUi {
             out.println();
             ListGameResponse response = server.listGames(authToken);
             GameData game = response.games().get(gameNumber-1);
+            ChessGame curGame = game.getGame();
             server.joinGame(game.getGameID(), teamColor, authToken);
 
-            new GamePlayUi(game, teamColor, authToken);
+            new GamePlayUi(curGame, teamColor, authToken);
 
         }
         catch(ResponseException e){
