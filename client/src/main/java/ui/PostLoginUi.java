@@ -3,7 +3,9 @@ package ui;
 import chess.ChessGame;
 import client.ServerFacade;
 import exception.ResponseException;
+import model.GameData;
 import response.CreateGameResponse;
+import response.ListGameResponse;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -40,6 +42,9 @@ public class PostLoginUi {
             else if(Objects.equals(line, "Join Game")|| Objects.equals(line, "join game")|| Objects.equals(line, "4")){
                 joinGame(scanner);
             }
+            else if(Objects.equals(line, "Join as Observer")|| Objects.equals(line, "join as observer")|| Objects.equals(line, "5")){
+                joinGame(scanner);
+            }
             else if(Objects.equals(line, "Help")|| Objects.equals(line, "help")|| Objects.equals(line, "6")){
                 out.println("Input either the number or the name of the command you want to run.");
                 options();
@@ -56,7 +61,7 @@ public class PostLoginUi {
             new PreloginUi();
         }catch(ResponseException e){
             out.println("Error logging out");
-            loggedIn(scanner);
+            logout(scanner);
         }
     }
     public void createGame(Scanner scanner){
@@ -69,13 +74,13 @@ public class PostLoginUi {
         }
         catch(ResponseException e){
             out.println("Error creating game. Please try again.");
-            loggedIn(scanner);
+            createGame(scanner);
         }
     }
     public void joinGame(Scanner scanner){
         try{
-            out.println("What is the ID of the game you want to join?");
-            Integer id = scanner.nextInt();
+//            out.println("What is the ID of the game you want to join?");
+//            Integer id = scanner.nextInt();
             out.println("Which team do you want to be? Black/White/just watch");
             String color = scanner.nextLine();
             ChessGame.TeamColor teamColor;
@@ -86,17 +91,41 @@ public class PostLoginUi {
             }else{
                 teamColor = null;
             }
+            out.println(" What game do you want to join?");
+            list();
+            Integer id = scanner.nextInt();
+            out.println();
             server.joinGame(id, teamColor, authToken);
             new GamePlayUi();
 
         }
         catch(ResponseException e){
             out.println("Error joining game. Please try again.");
-            loggedIn(scanner);
+            joinGame(scanner);
+        }
+    }
+    public void list() throws ResponseException {
+        ListGameResponse response = server.listGames(authToken);
+        if (response != null && response.games() != null && !response.games().isEmpty()) {
+            int gameNumber = 1;
+            for (GameData gameData : response.games()) {
+                // Display game information (name and players) in a numbered list format
+                System.out.println(gameNumber + ". " + "Game ID:" + gameData.getGameID() + " Game Name: " + gameData.getGameName() + " White player: "+ gameData.getWhiteUsername() + " Black player: " + gameData.getBlackUsername());
+                gameNumber++;
+            }
+        } else {
+            System.out.println("No games available.");
         }
     }
     public void listGames(Scanner scanner){
-
+        try {
+            list();
+            out.println();
+            loggedIn(scanner);
+        }catch(ResponseException e){
+            out.println("Error listing games. Please try again.");
+            listGames(scanner);
+        }
     }
 
     private void options() {
