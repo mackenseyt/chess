@@ -19,7 +19,7 @@ public class PostLoginUi {
     private final ServerFacade server = new ServerFacade("http://localhost:3000");
     private final String authToken;
 
-    public PostLoginUi(String authToken) throws ResponseException {
+    public PostLoginUi(String authToken){
         this.authToken = authToken;
         Scanner scanner = new Scanner(System.in);
         loggedIn(scanner);
@@ -61,15 +61,16 @@ public class PostLoginUi {
             new PreloginUi();
         }catch(ResponseException e){
             out.println("Error logging out");
+            out.println();
             logout(scanner);
         }
     }
     public void createGame(Scanner scanner){
         try{
-            out.println("What do you want to call your game?");
+            out.print("What do you want to call your game? ");
             String name = scanner.nextLine();
             server.createGame(name, authToken);
-            out.println("Your game has been created!");
+            out.print("Your game has been created!");
             loggedIn(scanner);
         }
         catch(ResponseException e){
@@ -79,30 +80,49 @@ public class PostLoginUi {
     }
     public void joinGame(Scanner scanner){
         try{
-//            out.println("What is the ID of the game you want to join?");
-//            Integer id = scanner.nextInt();
-            out.println("Which team do you want to be? Black/White/just watch");
+            list();
+            out.println("What game do you want to join?");
+            Integer gameNumber = scanner.nextInt();
+            scanner.nextLine();
+            out.println("Which team do you want to be? (B)Black (W)White  or just watch? ");
             String color = scanner.nextLine();
             ChessGame.TeamColor teamColor;
-            if(color.equals("Black")){
+            if(color.equals("Black")|| color.equals("B")){
                 teamColor = ChessGame.TeamColor.BLACK;
-            }else if(color.equals("White")){
+            }else if(color.equals("White")||color.equals("W")){
                 teamColor = ChessGame.TeamColor.WHITE;
             }else{
                 teamColor = null;
             }
-            out.println(" What game do you want to join?");
-            list();
-            Integer id = scanner.nextInt();
             out.println();
-            server.joinGame(id, teamColor, authToken);
-            new GamePlayUi();
+            ListGameResponse response = server.listGames(authToken);
+            GameData game = response.games().get(gameNumber-1);
+            server.joinGame(game.getGameID(), teamColor, authToken);
+
+            new GamePlayUi(game, teamColor, authToken);
 
         }
         catch(ResponseException e){
             out.println("Error joining game. Please try again.");
             joinGame(scanner);
         }
+    }
+    private Integer getGameID(int selectedGame){
+        try {
+            ListGameResponse response = server.listGames(authToken);
+            if (response != null && response.games() != null && !response.games().isEmpty()) {
+                int gameNumber = 1;
+                for (GameData gameData : response.games()) {
+                    if (gameNumber == selectedGame) {
+                        return gameData.getGameID();
+                    }
+                    gameNumber++;
+                }
+            }
+        } catch (ResponseException e) {
+            // Handle the exception, maybe log it
+        }
+        return null;
     }
     public void list() throws ResponseException {
         ListGameResponse response = server.listGames(authToken);

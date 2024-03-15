@@ -22,7 +22,7 @@ public class PreloginUi {
         start(scanner);
     }
 
-    public void start(Scanner scanner) throws ResponseException {
+    public void start(Scanner scanner){
         options();
 
         while(scanner.hasNextLine()){
@@ -49,7 +49,7 @@ public class PreloginUi {
         out.println("3: Quit");
         out.println("4: Help");
     }
-    private void registerUI(Scanner scanner) throws ResponseException {
+    private void registerUI(Scanner scanner){
         try {
             out.print("Desired Username: ");
             String username = scanner.nextLine();
@@ -64,14 +64,13 @@ public class PreloginUi {
                 out.println();
                 String authToken = response.authToken();
                 new PostLoginUi(authToken);
-            }else{
-                out.println("Failed to register. Please try again.");
             }
         }catch(ResponseException e){
-            throw new RuntimeException(e.toString());
+            out.println("Failed to register. Please try again.");
+            registerUI(scanner);
         }
     }
-    private void loginUI(Scanner scanner)throws ResponseException{
+    private void loginUI(Scanner scanner){
         try{
             out.print("Username:");
             String username = scanner.nextLine();
@@ -84,12 +83,11 @@ public class PreloginUi {
                 out.println();
                 String authToken = response.authToken();
                 new PostLoginUi(authToken);
-            }else{
-                out.println("Failed to login. Try again.");
             }
         }
         catch(ResponseException e){
-            throw new RuntimeException(e.toString());
+            out.println("Failed to login. Try again.");
+            loginUI(scanner);
         }
     }
 }

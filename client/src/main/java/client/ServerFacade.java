@@ -3,6 +3,7 @@ package client;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import exception.ResponseException;
+import model.GameData;
 import request.CreateGameRequest;
 import request.JoinGameRequest;
 import request.LoginRequest;
@@ -106,10 +107,10 @@ public class ServerFacade {
         return makeRequest("GET", path, authToken, null, ListGameResponse.class);
     }
 
-    public void joinGame(int gameID, ChessGame.TeamColor color, String authToken) throws ResponseException{
+    public GameData joinGame(int gameID, ChessGame.TeamColor color, String authToken) throws ResponseException{
         var path = "/game";
         var request = new JoinGameRequest(color, gameID, authToken);
-        makeRequest("PUT", path, authToken, request,null);
+        return makeRequest("PUT", path, authToken, request, GameData.class);
     }
 
 //    for my use only!! CLIENT WILL NOT SEE
