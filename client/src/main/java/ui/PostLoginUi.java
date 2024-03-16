@@ -88,12 +88,12 @@ public class PostLoginUi {
             Integer gameNumber = scanner.nextInt();
             scanner.nextLine();
 
-            out.println("Which team do you want to be? (B)Black (W)White  or just watch? ");
+            out.println("Which team do you want to be? (W)White or (B)Black or (O)Observer?");
             String color = scanner.nextLine();
             ChessGame.TeamColor teamColor;
-            if(color.equals("Black")|| color.equals("B")){
+            if(color.equals("Black")|| color.equals("B") ||  color.equals("b") ){
                 teamColor = ChessGame.TeamColor.BLACK;
-            }else if(color.equals("White")||color.equals("W")){
+            }else if(color.equals("White")||color.equals("W")||  color.equals("w") ){
                 teamColor = ChessGame.TeamColor.WHITE;
             }else{
                 teamColor = null;

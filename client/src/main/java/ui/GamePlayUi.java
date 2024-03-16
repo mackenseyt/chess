@@ -25,7 +25,6 @@ public class GamePlayUi {
     public GamePlayUi(ChessGame game, ChessGame.TeamColor teamColor, String authToken){
         this.authToken = authToken;
 //        out.println("We will start in just one moment");
-        out.println();
         this.game = game;
         this.teamColor = teamColor;
         for (int i = 1; i < BOARD_SIZE + 1; i++){
@@ -37,6 +36,8 @@ public class GamePlayUi {
         printWhiteBoard(game.getBoard());
         out.println();
         printBlackBoard(game.getBoard());
+//        Remove when its time to test or impliment this ui
+        new PostLoginUi(authToken);
     }
 
     private void printBlackBoard(ChessBoard board) {
