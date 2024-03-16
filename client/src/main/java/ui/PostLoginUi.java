@@ -112,30 +112,14 @@ public class PostLoginUi {
             joinGame(scanner);
         }
     }
-    private Integer getGameID(int selectedGame){
-        try {
-            ListGameResponse response = server.listGames(authToken);
-            if (response != null && response.games() != null && !response.games().isEmpty()) {
-                int gameNumber = 1;
-                for (GameData gameData : response.games()) {
-                    if (gameNumber == selectedGame) {
-                        return gameData.getGameID();
-                    }
-                    gameNumber++;
-                }
-            }
-        } catch (ResponseException e) {
-            // Handle the exception, maybe log it
-        }
-        return null;
-    }
+
     public void list() throws ResponseException {
         ListGameResponse response = server.listGames(authToken);
         if (response != null && response.games() != null && !response.games().isEmpty()) {
             int gameNumber = 1;
             for (GameData gameData : response.games()) {
                 // Display game information (name and players) in a numbered list format
-                System.out.println(gameNumber + ". " + "Game ID:" + gameData.getGameID() + " Game Name: " + gameData.getGameName() + " White player: "+ gameData.getWhiteUsername() + " Black player: " + gameData.getBlackUsername());
+                System.out.println(gameNumber + ")" +" Game Name: " + gameData.getGameName() + "  White player:("+ gameData.getWhiteUsername() + ")  Black player:(" + gameData.getBlackUsername()+ ")");
                 gameNumber++;
             }
         } else {
