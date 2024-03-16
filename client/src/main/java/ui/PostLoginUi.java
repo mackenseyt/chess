@@ -81,10 +81,13 @@ public class PostLoginUi {
     }
     public void joinGame(Scanner scanner){
         try{
+//            list valid games
             list();
+
             out.println("What game do you want to join?");
             Integer gameNumber = scanner.nextInt();
             scanner.nextLine();
+
             out.println("Which team do you want to be? (B)Black (W)White  or just watch? ");
             String color = scanner.nextLine();
             ChessGame.TeamColor teamColor;
@@ -95,13 +98,13 @@ public class PostLoginUi {
             }else{
                 teamColor = null;
             }
+
             out.println();
             ListGameResponse response = server.listGames(authToken);
             GameData game = response.games().get(gameNumber-1);
-            ChessGame curGame = game.getGame();
             server.joinGame(game.getGameID(), teamColor, authToken);
 
-            new GamePlayUi(curGame, teamColor, authToken);
+            new GamePlayUi(game.getGame(), teamColor, authToken);
 
         }
         catch(ResponseException e){
